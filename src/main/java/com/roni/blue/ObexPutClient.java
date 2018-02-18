@@ -1,8 +1,8 @@
 package rom.roni.blue;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import javax.microedition.io.Connector;
+import javax.microedition.io.StreamConnection;
 import javax.obex.*;
 
 public class ObexPutClient {
@@ -27,30 +27,38 @@ public class ObexPutClient {
 
         System.out.println("Connecting to " + serverURL);
 
-        ClientSession clientSession = (ClientSession) Connector.open(serverURL);
-        HeaderSet hsConnectReply = clientSession.connect(null);
-        if (hsConnectReply.getResponseCode() != ResponseCodes.OBEX_HTTP_OK) {
-            System.out.println("Failed to connect");
-            return;
+        //ClientSession clientSession = (ClientSession) Connector.open(serverURL);
+        StreamConnection clientSession = (StreamConnection)Connector.open(serverURL);
+        
+        OutputStream out = clientSession.openOutputStream();
+        PrintWriter pw = new PrintWriter(new OutputStreamWriter(out));
+        int sum = 0;
+        byte[] sendBuffer = {'F','T',0,0,0x07,0,0,0,0}; 
+        for (int i=0;i<7;i++) {
+            sum += sendBuffer[i];
         }
+        sum &= 0x00ff;
+        sendBuffer[7] = (byte)sum;
+        sendBuffer[8] = (byte)(sum>>8);
+        out.write( sendBuffer );
+        out.flush();
 
-        HeaderSet hsOperation = clientSession.createHeaderSet();
-        hsOperation.setHeader(HeaderSet.NAME, "Hello.txt");
-        hsOperation.setHeader(HeaderSet.TYPE, "text");
+        System.out.println("SENT ");
 
-        //Create PUT Operation
-        Operation putOperation = clientSession.put(hsOperation);
-
-        // Send some text to server
-        byte data[] = "Hello world!".getBytes("iso-8859-1");
-        OutputStream os = putOperation.openOutputStream();
-        os.write(data);
-        os.close();
-
-        putOperation.close();
-
-        clientSession.disconnect(null);
-
+        InputStream in = clientSession.openInputStream();
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        char[] buff = new char[32];
+        br.read(buff, 0, 32 );
+        System.out.println("RCV ");
+        for (int i = 0; i < 32; i++ ) {
+            System.out.print( String.format("%04x ", (int)buff[i]) );
+        }
+        for (int i = 0; i < 32; i++ ) {
+            System.out.print( buff[i] );
+        }
+        System.out.println();
+        
+        
         clientSession.close();
     }
 }

@@ -11,9 +11,10 @@ import javax.bluetooth.*;
  */
 public class ServicesSearch {
 
-    static final UUID OBEX_OBJECT_PUSH = new UUID(0x1105);
+    static final UUID OBEX_OBJECT_PUSH = new UUID(0x0003);
 
-    static final UUID OBEX_FILE_TRANSFER = new UUID(0x1106);
+    static final UUID SPP = new UUID("446118f08b1e11e29e960800200c9a66", false);
+
 
     public static final Vector/*<String>*/ serviceFound = new Vector();
 
@@ -21,7 +22,7 @@ public class ServicesSearch {
 
         // First run RemoteDeviceDiscovery and use discoved device
         RemoteDeviceDiscovery.main(null);
-
+        
         serviceFound.clear();
 
         UUID serviceUUID = OBEX_OBJECT_PUSH;
