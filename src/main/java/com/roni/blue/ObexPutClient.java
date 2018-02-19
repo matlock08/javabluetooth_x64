@@ -67,6 +67,8 @@ public class ObexPutClient {
         br.read(buffer, 0, size );
         System.out.println();
         
+        br.skip( br.available() );
+
         System.out.println("SEND MATCH");
 	    byte buf[]=new byte[1024];
                         //Origen   Dest    Eleme
