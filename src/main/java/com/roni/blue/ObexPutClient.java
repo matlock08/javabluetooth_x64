@@ -56,10 +56,13 @@ public class ObexPutClient {
         int available = br.available();
         //System.out.println("Skiping " + available + "  ");
         br.skip( available );
-        */status
+        */
 
-        System.arraycopy( JOSE_ENROLL, 0, buf, 0, JOSE_ENROLL.length ); // From DB
-        System.arraycopy( JOSE_CAPTUR, 0, buf, JOSE_ENROLL.length, JOSE_CAPTUR.length ); // From Device
+        //System.arraycopy( JOSE_ENROLL, 0, buf, 0, JOSE_ENROLL.length ); // From DB
+        //System.arraycopy( JOSE_CAPTUR, 0, buf, JOSE_ENROLL.length, JOSE_CAPTUR.length ); // From Device
+
+        memcpy(buf,0,JOSE_ENROLL,0,512);
+        memcpy(buf,512,JOSE_CAPTUR,0,512);
 
         sendCommand((byte)0x09,buf,1024);
 
@@ -103,6 +106,16 @@ public class ObexPutClient {
 
         
     }
+
+    private void memcpy(byte[] dstbuf,int dstoffset,byte[] srcbuf,int srcoffset,int size) {
+		for(int i=0;i<size;i++) {
+            try {
+			    dstbuf[dstoffset+i]=srcbuf[srcoffset+i];
+            } catch (NullPointerException e) {
+            }
+		}
+        return;
+	}
 
     private int calcCheckSum(byte[] buffer,int size) {
 		int sum=0;
