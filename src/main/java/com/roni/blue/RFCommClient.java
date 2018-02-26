@@ -33,8 +33,8 @@ public class RFCommClient {
     private final static byte CMD_GETCHAR=0x31;
     private final static byte CMD_UPCARDSN=0x43;
 
+	private StreamConnection clientSession;
     private OutputStream out;
-    private InputStream in;
     private BufferedInputStream br;
     public byte mUpImage[]=new byte[73728];//36864
     public int mUpImageSize=0;
@@ -56,35 +56,46 @@ public class RFCommClient {
 
         System.out.println("Connecting to " + serverURL);
 
+		clientSession = (StreamConnection)Connector.open(serverURL);
+
+		out = clientSession.openOutputStream();
+        br = new BufferedInputStream(clientSession.openInputStream());
 		    
-        byte[] probeImage = Files.readAllBytes(Paths.get("image1.bmp"));
-        byte[] candidateImage = Files.readAllBytes(Paths.get("image2.bmp"));
-        FingerprintTemplate probe = new FingerprintTemplate(probeImage);
-        FingerprintTemplate candidate = new FingerprintTemplate(candidateImage);
+	}
 
-        FingerprintMatcher matcher = new FingerprintMatcher(probe);
-        double score = matcher.match(candidate);
-
-        System.out.println(score);
-    
-        //ObexPutClient(serverURL);
+	public void close() {
+		try {
+			out.close();
+			br.close();
+			clientSession.close();
+		} catch ( IOException ie ) {
+			System.out.println(ie.getMessage());
+		}
 	}
 
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
-		new RFCommClient(args);       
+		RFCommClient rfcomm = new RFCommClient(args);     
         
+		byte[] probeImage = rfcomm.getFingerPrintImageAsBMP(5000);
+        FingerprintTemplate probe = new FingerprintTemplate(probeImage);
+        FingerprintTemplate candidate = new FingerprintTemplate(probeImage);
+
+        FingerprintMatcher matcher = new FingerprintMatcher(probe);
+        double score = matcher.match(candidate);
+
+        System.out.println(score);    
+        
+		rfcomm.close();
     }
 
     public void ObexPutClient(String serverURL) throws IOException {
-        StreamConnection clientSession = (StreamConnection)Connector.open(serverURL);
+        
         byte[] buf = new byte[1024];
         byte[] buff = new byte[9];
         byte[] buffer = new byte[512];
-        out = clientSession.openOutputStream();
-        in = clientSession.openInputStream();
-        br = new BufferedInputStream(in);
+        
 /*
         sendCommand((byte)0x08, null, 0); // capture to host
 
@@ -134,10 +145,29 @@ public class RFCommClient {
         }
         System.out.println();
         System.out.println("Receive " + i);
-        receiveCommand(databuff,i,CMD_GETIMAGE);
+        receiveCommand(databuff,i);
 
-        clientSession.close();
+        close();
     }
+
+	public byte[] getFingerPrintImageAsBMP(long timeout ) throws IOException {
+		byte databuff[]=new byte[73728];
+        int i = 0;
+		sendCommand(CMD_GETIMAGE, null, 0);         
+
+        try {
+            Thread.sleep(timeout);
+        } catch ( java.lang.InterruptedException ie ) {
+
+        }
+
+        while ( br.available() != 0 ) {
+            databuff[i] = (byte)br.read();
+            i++;
+        }
+        
+        return receiveCommandImage(databuff,i);
+	}
 
     private void sendCommand(byte cmdid,byte[] data,int size) throws IOException {
         
@@ -271,26 +301,18 @@ public class RFCommClient {
 		return bmpData;
 	}
     
-    private void receiveCommand(byte[] databuf,int datasize, byte mDeviceCmd) { 
-		if(mDeviceCmd==CMD_GETIMAGE) {
-    		System.out.println("datasize " + datasize);
-    		memcpy(mUpImage,mUpImageSize,databuf,0,datasize);
-			mUpImageSize=mUpImageSize+datasize;
-			if(mUpImageSize>=15200){
-				byte[] bmpdata=getFingerprintImage(mUpImage,152,200);
-                try {
-				FileOutputStream fos = new FileOutputStream("image.bmp");
-                fos.write(bmpdata);
-                fos.close();
-                } catch (Exception e  ){
-
-                }
-                
-				mUpImageSize=0;
-			
-			}
+    private byte[] receiveCommandImage(byte[] databuf,int datasize) { 
+		    		
+		if(datasize>=15200){
+			byte[] bmpdata=getFingerprintImage(databuf,152,200);
+               
+			return bmpdata;
+		}
    		
-		} else {
+		return null;
+	}
+		
+	private void receiveCommand(byte[] databuf,int datasize) {
  			
    		    	if((databuf[0]=='F')&&(databuf[1]=='T'))	{
    		    		switch(databuf[4]) {
@@ -423,7 +445,7 @@ public class RFCommClient {
    		    	}   				
    			
            
-   		}
+   		
             
     }
 }

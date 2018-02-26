@@ -36,7 +36,6 @@ public class ServicesSearch implements DiscoveryListener {
         for(RemoteDevice btDevice : discovery.getRemoteDevices() ) {
             
             synchronized(serviceSearchCompletedEvent) {
-                System.out.println("search services on " + btDevice.getBluetoothAddress() + " " + btDevice.getFriendlyName(false));
                 LocalDevice.getLocalDevice().getDiscoveryAgent().searchServices(attrIDs, searchUuidSet, btDevice, this);
                 serviceSearchCompletedEvent.wait();
             }
@@ -66,7 +65,6 @@ public class ServicesSearch implements DiscoveryListener {
     }
 
     public void serviceSearchCompleted(int transID, int respCode) {
-        System.out.println("service search completed!");
         synchronized(serviceSearchCompletedEvent){
             serviceSearchCompletedEvent.notifyAll();
         }
@@ -76,10 +74,5 @@ public class ServicesSearch implements DiscoveryListener {
         return serviceFound;
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-
-        new ServicesSearch(args);
-
-    }
 
 }

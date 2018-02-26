@@ -19,15 +19,12 @@ public class RemoteDeviceDiscovery implements DiscoveryListener {
         synchronized(inquiryCompletedEvent) {
             boolean started = LocalDevice.getLocalDevice().getDiscoveryAgent().startInquiry(DiscoveryAgent.GIAC, this);
             if (started) {
-                System.out.println("wait for device inquiry to complete...");
                 inquiryCompletedEvent.wait();
-                System.out.println(devicesDiscovered.size() +  " device(s) found");
             }
         }
     }
 
     public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {
-        System.out.println("Device " + btDevice.getBluetoothAddress() + " found");
         devicesDiscovered.add(btDevice);
         try {
             System.out.println("     name " + btDevice.getFriendlyName(false));
@@ -36,7 +33,6 @@ public class RemoteDeviceDiscovery implements DiscoveryListener {
     }
 
     public void inquiryCompleted(int discType) {
-        System.out.println("Device Inquiry completed!");
         synchronized(inquiryCompletedEvent){
             inquiryCompletedEvent.notifyAll();
         }
@@ -52,9 +48,5 @@ public class RemoteDeviceDiscovery implements DiscoveryListener {
         return devicesDiscovered;
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        new RemoteDeviceDiscovery();
-        
-    }
-
+    
 }
