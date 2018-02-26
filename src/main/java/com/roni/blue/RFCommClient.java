@@ -36,9 +36,7 @@ public class RFCommClient {
 	private StreamConnection clientSession;
     private OutputStream out;
     private BufferedInputStream br;
-    public byte mUpImage[]=new byte[73728];//36864
-    public int mUpImageSize=0;
-
+    
 	public RFCommClient(String[] args ) throws IOException,InterruptedException  {
 		String serverURL;
         if ((args != null) && (args.length > 0)) {
@@ -78,6 +76,7 @@ public class RFCommClient {
     public static void main(String[] args) throws IOException, InterruptedException {
 		RFCommClient rfcomm = new RFCommClient(args);     
         
+		/*
 		byte[] probeImage = rfcomm.getFingerPrintImageAsBMP(5000);
         FingerprintTemplate probe = new FingerprintTemplate(probeImage);
         FingerprintTemplate candidate = new FingerprintTemplate(probeImage);
@@ -85,71 +84,33 @@ public class RFCommClient {
         FingerprintMatcher matcher = new FingerprintMatcher(probe);
         double score = matcher.match(candidate);
 
-        System.out.println(score);    
+		System.out.println(); 
+        System.out.println("Score " + score);    
+		*/
+		byte[] templateDevice = rfcomm.enrollHost(5000);
+		
+		FingerprintTemplate template = new FingerprintTemplate(templateDevice);
+
+		System.out.println(template.json() );
+
+		byte[] templateCaptureByte = rfcomm.captureHost(5000);
+		
+		FingerprintTemplate templateCapture = new FingerprintTemplate(templateCaptureByte);
+
+		System.out.println(templateCapture.json() );
+
+		FingerprintMatcher matcher = new FingerprintMatcher(template);
+        double score = matcher.match(templateCapture);
+
+		System.out.println(); 
+        System.out.println("Score " + score); 
         
 		rfcomm.close();
     }
 
-    public void ObexPutClient(String serverURL) throws IOException {
-        
-        byte[] buf = new byte[1024];
-        byte[] buff = new byte[9];
-        byte[] buffer = new byte[512];
-        
-/*
-        sendCommand((byte)0x08, null, 0); // capture to host
-
-        br.read(buff, 0, 9 );
-        int size=(byte)(buff[5])+((buff[6]<<8)&0xFF00)-1;
-        br.read(buffer, 0, size );
-        //for (int i = 0; i < buffer.length;i++ ) {
-        //    System.out.print( String.format("(byte)0x%02x,", (byte)buffer[i]) ); 
-        //}
-        int available = br.available();
-        //System.out.println("Skiping " + available + "  ");
-        br.skip( available );
-
-
-        //System.arraycopy( JOSE_ENROLL, 0, buf, 0, JOSE_ENROLL.length ); // From DB
-        //System.arraycopy( JOSE_CAPTUR, 0, buf, JOSE_ENROLL.length, JOSE_CAPTUR.length ); // From Device
-
-        memcpy(buf,0,JOSE_ENROLL,0,512);
-        memcpy(buf,512,JOSE_CAPTUR,0,512);
-
-        sendCommand((byte)0x09,buf,1024);
-
-        byte[] bufferResp = new byte[10];        
-        br.read(bufferResp, 0, 10 );
-        int score=(byte)(bufferResp[8])+((bufferResp[9]<<8)&0xF0);
-        if(bufferResp[7]==1)
-            System.out.print("Match Succeed:"+String.valueOf(score));
-        else
-            System.out.print("Match Fail"+String.valueOf(score));
-            
-        br.skip( br.available() );
-        */
-        System.out.println("Image");
-        sendCommand(CMD_GETIMAGE, null, 0); // capture to host
-
-        byte databuff[]=new byte[73728];
-        int i = 0;
-
-        try {
-            Thread.sleep(5000);
-        } catch ( java.lang.InterruptedException ie ) {
-
-        }
-        while ( br.available() != 0 ) {
-            databuff[i] = (byte)br.read();
-            i++;
-        }
-        System.out.println();
-        System.out.println("Receive " + i);
-        receiveCommand(databuff,i);
-
-        close();
-    }
-
+	/**
+	 * Method to get the raw image on BMP format from device
+	 */
 	public byte[] getFingerPrintImageAsBMP(long timeout ) throws IOException {
 		byte databuff[]=new byte[73728];
         int i = 0;
@@ -167,6 +128,50 @@ public class RFCommClient {
         }
         
         return receiveCommandImage(databuff,i);
+	}
+
+	/**
+	 * Method to get the template on device specific format for enroll
+	 */
+	public byte[] enrollHost(long timeout ) throws IOException {
+		byte[] databuff = new byte[1024];
+		int i = 0;
+		sendCommand(CMD_ENROLHOST, null, 0);         
+
+        try {
+            Thread.sleep(timeout);
+        } catch ( java.lang.InterruptedException ie ) {
+
+        }
+
+        while ( br.available() != 0 ) {
+            databuff[i] = (byte)br.read();
+            i++;
+        }
+        
+        return receiveCommand(databuff,i);
+	}
+
+	/**
+	 * Method to get the template on device specific format to capture
+	 */
+	public byte[] captureHost(long timeout ) throws IOException {
+		byte[] databuff = new byte[1024];
+		int i = 0;
+		sendCommand(CMD_CAPTUREHOST, null, 0);         
+
+        try {
+            Thread.sleep(timeout);
+        } catch ( java.lang.InterruptedException ie ) {
+
+        }
+
+        while ( br.available() != 0 ) {
+            databuff[i] = (byte)br.read();
+            i++;
+        }
+        
+        return receiveCommand(databuff,i);
 	}
 
     private void sendCommand(byte cmdid,byte[] data,int size) throws IOException {
@@ -193,10 +198,6 @@ public class RFCommClient {
         out.write( sendbuf );
         out.flush();    
 
-        for (int i = 0; i < sendbuf.length;i++ ) {
-            System.out.print( String.format("%02x ", (byte)sendbuf[i]) ); 
-        }
-        
     }
 
     private void memcpy(byte[] dstbuf,int dstoffset,byte[] srcbuf,int srcoffset,int size) {
@@ -312,8 +313,9 @@ public class RFCommClient {
 		return null;
 	}
 		
-	private void receiveCommand(byte[] databuf,int datasize) {
- 			
+	private byte[] receiveCommand(byte[] databuf,int datasize) {
+		
+
    		    	if((databuf[0]=='F')&&(databuf[1]=='T'))	{
    		    		switch(databuf[4]) {
    		    		case CMD_ENROLID: {
@@ -359,10 +361,11 @@ public class RFCommClient {
    		    		case CMD_ENROLHOST: {
    		    				int size=(byte)(databuf[5])+((databuf[6]<<8)&0xFF00)-1;
    		    				if(databuf[7]==1) {
-   		    					//memcpy(mRefData,0,databuf,8,size);
-   		    					//mRefSize=size;
+								System.out.println("Enrol Succeed");
+								byte[] buffer = new byte[size];
+   		    					memcpy(buffer,0,databuf,8,size);   		    					
+   		    					return buffer;
    		    					
-   		    					System.out.println("Enrol Succeed");
    		    				}else
    		    					System.out.println("Enrol Fail");
    		    			}
@@ -370,11 +373,10 @@ public class RFCommClient {
    		    		case CMD_CAPTUREHOST: {
    		    				int size=(byte)(databuf[5])+((databuf[6]<<8)&0xFF00)-1;
    		    				if(databuf[7]==1) {
-   		    					//memcpy(mMatData,0,databuf,8,size);
-   		    					//mMatSize=size;
-   		    					//ת��
-   		    
    		    					System.out.println("Capture Succeed");
+								byte[] buffer = new byte[size];
+   		    					memcpy(buffer,0,databuf,8,size);   		    					
+   		    					return buffer;
    		    				}
    		    				else
    		    					System.out.println("Capture Fail");
@@ -445,7 +447,7 @@ public class RFCommClient {
    		    	}   				
    			
            
-   		
+   		return null;
             
     }
 }
