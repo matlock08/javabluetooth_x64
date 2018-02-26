@@ -87,6 +87,9 @@ public class RFCommClient {
 		System.out.println(); 
         System.out.println("Score " + score);    
 		*/
+
+
+		/*
 		byte[] templateDevice = rfcomm.enrollHost(5000);
 		
 		FingerprintTemplate template = new FingerprintTemplate(templateDevice);
@@ -104,6 +107,13 @@ public class RFCommClient {
 
 		System.out.println(); 
         System.out.println("Score " + score); 
+		*/
+
+		byte[] templateDevice = rfcomm.enrollHost(5000);
+		
+		byte[] templateCaptureByte = rfcomm.captureHost(5000);
+
+		byte[] aux = rfcomm.matchDevice(5000, templateDevice, templateCaptureByte );
         
 		rfcomm.close();
     }
@@ -159,6 +169,30 @@ public class RFCommClient {
 		byte[] databuff = new byte[1024];
 		int i = 0;
 		sendCommand(CMD_CAPTUREHOST, null, 0);         
+
+        try {
+            Thread.sleep(timeout);
+        } catch ( java.lang.InterruptedException ie ) {
+
+        }
+
+        while ( br.available() != 0 ) {
+            databuff[i] = (byte)br.read();
+            i++;
+        }
+        
+        return receiveCommand(databuff,i);
+	}
+
+	public byte[] matchDevice(long timeout, byte []enrol, byte []capture ) throws IOException {
+		byte[] buffer = new byte[1024];
+		byte[] databuff = new byte[1024];
+		int i = 0;
+
+		memcpy(buffer,0,enrol,0,512);
+		memcpy(buffer,512,capture,0,512);
+		
+		sendCommand(CMD_MATCH, buffer, 1024);         
 
         try {
             Thread.sleep(timeout);
