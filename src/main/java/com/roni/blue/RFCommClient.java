@@ -10,9 +10,29 @@ import java.nio.file.Files;
 
 
 public class RFCommClient {
-    
-    public static final byte[] JOSE_ENROLL = {(byte)0x46,(byte)0x4D,(byte)0x52,(byte)0x00,(byte)0x20,(byte)0x32,(byte)0x30,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x01,(byte)0x7A,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0xFC,(byte)0x01,(byte)0x44,(byte)0x00,(byte)0xC5,(byte)0x00,(byte)0xC5,(byte)0x01,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x54,(byte)0x18,(byte)0x40,(byte)0x61,(byte)0x00,(byte)0x35,(byte)0x13,(byte)0x5D,(byte)0x40,(byte)0x36,(byte)0x00,(byte)0x4E,(byte)0x38,(byte)0x5D,(byte)0x40,(byte)0x52,(byte)0x00,(byte)0x66,(byte)0x33,(byte)0x5D,(byte)0x40,(byte)0x22,(byte)0x00,(byte)0xA3,(byte)0x4C,(byte)0x5D,(byte)0x40,(byte)0xA0,(byte)0x00,(byte)0xA5,(byte)0x1E,(byte)0x5D,(byte)0x40,(byte)0x66,(byte)0x00,(byte)0xF2,(byte)0x6E,(byte)0x5D,(byte)0x80,(byte)0x73,(byte)0x00,(byte)0x2C,(byte)0x8E,(byte)0x5D,(byte)0x80,(byte)0x9F,(byte)0x00,(byte)0x46,(byte)0x60,(byte)0x5D,(byte)0x80,(byte)0xBF,(byte)0x00,(byte)0x53,(byte)0x4F,(byte)0x5D,(byte)0x80,(byte)0x78,(byte)0x00,(byte)0x69,(byte)0xDD,(byte)0x5D,(byte)0x80,(byte)0x93,(byte)0x00,(byte)0x72,(byte)0x5E,(byte)0x5D,(byte)0x80,(byte)0x2E,(byte)0x00,(byte)0x76,(byte)0x44,(byte)0x5D,(byte)0x80,(byte)0xCE,(byte)0x00,(byte)0x7C,(byte)0x3E,(byte)0x5D,(byte)0x80,(byte)0xA2,(byte)0x00,(byte)0xC4,(byte)0x13,(byte)0x5D,(byte)0x80,(byte)0x47,(byte)0x00,(byte)0xE5,(byte)0xEC,(byte)0x5D,(byte)0x40,(byte)0x43,(byte)0x00,(byte)0xB0,(byte)0x53,(byte)0x57,(byte)0x80,(byte)0x50,(byte)0x00,(byte)0xB6,(byte)0xE4,(byte)0x57,(byte)0x40,(byte)0x2E,(byte)0x00,(byte)0xF5,(byte)0x60,(byte)0x51,(byte)0x40,(byte)0x2A,(byte)0x01,(byte)0x02,(byte)0xE7,(byte)0x51,(byte)0x40,(byte)0xD3,(byte)0x01,(byte)0x03,(byte)0x17,(byte)0x51,(byte)0x80,(byte)0x96,(byte)0x00,(byte)0x89,(byte)0x3B,(byte)0x51,(byte)0x80,(byte)0xC8,(byte)0x01,(byte)0x01,(byte)0x8A,(byte)0x51,(byte)0x80,(byte)0x3A,(byte)0x01,(byte)0x03,(byte)0xED,(byte)0x51,(byte)0x40,(byte)0x8C,(byte)0x00,(byte)0x83,(byte)0x54,(byte)0x4B,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00};
-    public static final byte[] JOSE_CAPTUR = {(byte)0x46,(byte)0x4D,(byte)0x52,(byte)0x00,(byte)0x20,(byte)0x32,(byte)0x30,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x01,(byte)0x7A,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0xFC,(byte)0x01,(byte)0x44,(byte)0x00,(byte)0xC5,(byte)0x00,(byte)0xC5,(byte)0x01,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x5A,(byte)0x13,(byte)0x40,(byte)0xCA,(byte)0x00,(byte)0x43,(byte)0xF2,(byte)0x5D,(byte)0x40,(byte)0x5F,(byte)0x00,(byte)0x48,(byte)0x3B,(byte)0x5D,(byte)0x40,(byte)0x25,(byte)0x00,(byte)0x5B,(byte)0x4B,(byte)0x5D,(byte)0x40,(byte)0x71,(byte)0x00,(byte)0x6B,(byte)0x43,(byte)0x5D,(byte)0x40,(byte)0x96,(byte)0x00,(byte)0x80,(byte)0x48,(byte)0x5D,(byte)0x40,(byte)0x3B,(byte)0x00,(byte)0x8F,(byte)0x56,(byte)0x5D,(byte)0x40,(byte)0x66,(byte)0x00,(byte)0x9E,(byte)0x52,(byte)0x5D,(byte)0x40,(byte)0x58,(byte)0x00,(byte)0xC2,(byte)0x5A,(byte)0x5D,(byte)0x40,(byte)0x85,(byte)0x00,(byte)0xE4,(byte)0xEB,(byte)0x5D,(byte)0x80,(byte)0x98,(byte)0x00,(byte)0x2A,(byte)0x2D,(byte)0x5D,(byte)0x80,(byte)0xAD,(byte)0x00,(byte)0x3D,(byte)0x1D,(byte)0x5D,(byte)0x80,(byte)0x94,(byte)0x00,(byte)0x3F,(byte)0x31,(byte)0x5D,(byte)0x80,(byte)0xCF,(byte)0x00,(byte)0x67,(byte)0xC5,(byte)0x5D,(byte)0x80,(byte)0xAB,(byte)0x00,(byte)0xC3,(byte)0xF3,(byte)0x5D,(byte)0x80,(byte)0x4B,(byte)0x00,(byte)0xFC,(byte)0xE4,(byte)0x5D,(byte)0x80,(byte)0xD2,(byte)0x00,(byte)0x9F,(byte)0x13,(byte)0x57,(byte)0x80,(byte)0xD3,(byte)0x00,(byte)0xAC,(byte)0x72,(byte)0x57,(byte)0x80,(byte)0xD3,(byte)0x00,(byte)0x86,(byte)0x41,(byte)0x51,(byte)0x40,(byte)0xD4,(byte)0x00,(byte)0x7C,(byte)0x47,(byte)0x4B,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00};
+	private final static byte CMD_ENROLID=0x02;		//Enroll in Device
+    private final static byte CMD_VERIFY=0x03;		//Verify in Device
+    private final static byte CMD_IDENTIFY=0x04;	//Identify in Device
+    private final static byte CMD_DELETEID=0x05;	//Delete in Device
+    private final static byte CMD_CLEARID=0x06;		//Clear in Device
+
+    private final static byte CMD_ENROLHOST=0x07;	//Enroll to Host
+    private final static byte CMD_CAPTUREHOST=0x08;	//Capture to Host
+    private final static byte CMD_MATCH=0x09;		//Match
+    private final static byte CMD_WRITEFPCARD=0x0A;	//Write Card Data
+    private final static byte CMD_READFPCARD=0x0B;	//Read Card Data
+    private final static byte CMD_CARDSN=0x0E;		//Read Card Sn
+    private final static byte CMD_GETSN=0x10;		//Get Device SN
+    private final static byte CMD_FPCARDMATCH=0x13; //Card Match
+
+    private final static byte CMD_WRITEDATACARD = 0x14;    //Write Card Data
+    private final static byte CMD_READDATACARD = 0x15;     //Read Card Data
+
+    private final static byte CMD_GETBAT=0x21;
+    private final static byte CMD_GETIMAGE=0x30;
+    private final static byte CMD_GETCHAR=0x31;
+    private final static byte CMD_UPCARDSN=0x43;
+
     private OutputStream out;
     private InputStream in;
     private BufferedInputStream br;
@@ -25,11 +45,9 @@ public class RFCommClient {
             serverURL = args[0];
         } else {
             String[] searchArgs = null;
-            // Connect to OBEXPutServer from examples
-            // searchArgs = new String[] { "11111111111111111111111111111123" };
             ServicesSearch services = new ServicesSearch(searchArgs);
             if (services.getServiceFound().size() == 0) {
-                System.out.println("OBEX service not found");
+                System.out.println("RFComm service not found");
                 return;
             }
             // Select the first service found
@@ -100,7 +118,7 @@ public class RFCommClient {
         br.skip( br.available() );
         */
         System.out.println("Image");
-        sendCommand((byte)0x30, null, 0); // capture to host
+        sendCommand(CMD_GETIMAGE, null, 0); // capture to host
 
         byte databuff[]=new byte[73728];
         int i = 0;
@@ -116,7 +134,7 @@ public class RFCommClient {
         }
         System.out.println();
         System.out.println("Receive " + i);
-        ReceiveCommand(databuff,i);
+        receiveCommand(databuff,i,CMD_GETIMAGE);
 
         clientSession.close();
     }
@@ -253,8 +271,9 @@ public class RFCommClient {
 		return bmpData;
 	}
     
-    private void ReceiveCommand(byte[] databuf,int datasize) { 
-    	System.out.println("datasize " + datasize);
+    private void receiveCommand(byte[] databuf,int datasize, byte mDeviceCmd) { 
+		if(mDeviceCmd==CMD_GETIMAGE) {
+    		System.out.println("datasize " + datasize);
     		memcpy(mUpImage,mUpImageSize,databuf,0,datasize);
 			mUpImageSize=mUpImageSize+datasize;
 			if(mUpImageSize>=15200){
@@ -271,193 +290,140 @@ public class RFCommClient {
 			
 			}
    		
-           /*
-           else{
- 			memcpy(mCmdData,mCmdSize,databuf,0,datasize);
-   	   		mCmdSize=mCmdSize+datasize;   			
-   			int totalsize=(byte)(mCmdData[5])+((mCmdData[6]<<8)&0xFF00)+9;   			
-   			if(mCmdSize>=totalsize){
-   				mCmdSize=0;
-   				mIsWork=false;
-   		    	if((mCmdData[0]=='F')&&(mCmdData[1]=='T'))	{
-   		    		switch(mCmdData[4]) {
-   		    		case CMD_PASSWORD: {    				
-   		    			}
-   		    			break;
+		} else {
+ 			
+   		    	if((databuf[0]=='F')&&(databuf[1]=='T'))	{
+   		    		switch(databuf[4]) {
    		    		case CMD_ENROLID: {
-   		    				if(mCmdData[7]==1) {
-   		    					int id=mCmdData[8]+(mCmdData[9]<<8);
-   		    					AddStatusList("Enrol Succeed:"+String.valueOf(id));
+   		    				if(databuf[7]==1) {
+   		    					int id=databuf[8]+(databuf[9]<<8);
+   		    					System.out.println("Enrol Succeed:"+String.valueOf(id));
    		    				}
    		    				else
-   		    					AddStatusList("Enrol Fail");
+   		    					System.out.println("Enrol Fail");
    		    					
    		    			}
    		    			break;
    		    		case CMD_VERIFY: {
-   		    				if(mCmdData[7]==1)
-   		    					AddStatusList("Verify Succeed");
+   		    				if(databuf[7]==1)
+   		    					System.out.println("Verify Succeed");
    		    				else
-   		    					AddStatusList("Verify Fail");
+   		    					System.out.println("Verify Fail");
    		    			}
    		    			break;
    		    		case CMD_IDENTIFY: {
-   		    				if(mCmdData[7]==1) {
-   		    					int id=(byte)(mCmdData[8])+(byte)((mCmdData[9]<<8)&0xF0);
-   		        				AddStatusList("Search Result:"+String.valueOf(id));
+   		    				if(databuf[7]==1) {
+   		    					int id=(byte)(databuf[8])+(byte)((databuf[9]<<8)&0xF0);
+   		        				System.out.println("Search Result:"+String.valueOf(id));
    		    				} else
-   		    					AddStatusList("Search Fail");
+   		    					System.out.println("Search Fail");
    		    			}
    		    			break;
    		    		case CMD_DELETEID:
    		    			{
-   		    				if(mCmdData[7]==1)
-   		    					AddStatusList("Delete Succeed");
+   		    				if(databuf[7]==1)
+   		    					System.out.println("Delete Succeed");
    		    				else
-   		    					AddStatusList("Delete Fail");
+   		    					System.out.println("Delete Fail");
    		    			}
    		    			break;
    		    		case CMD_CLEARID: {
-   		    				if(mCmdData[7]==1)
-   		    					AddStatusList("Clear Succeed");
+   		    				if(databuf[7]==1)
+   		    					System.out.println("Clear Succeed");
    		    				else
-   		    					AddStatusList("Clear Fail");
+   		    					System.out.println("Clear Fail");
    		    			}
    		    			break;
    		    		case CMD_ENROLHOST: {
-   		    				int size=(byte)(mCmdData[5])+((mCmdData[6]<<8)&0xFF00)-1;
-   		    				if(mCmdData[7]==1) {
-   		    					memcpy(mRefData,0,mCmdData,8,size);
-   		    					mRefSize=size;
-   		    					//ת��
-   		    
-   		    					AddStatusList("Len="+String.valueOf(mRefSize));
-   		    					AddStatusListHex(mRefData,mRefSize);
-   		    					AddStatusList("Enrol Succeed");
+   		    				int size=(byte)(databuf[5])+((databuf[6]<<8)&0xFF00)-1;
+   		    				if(databuf[7]==1) {
+   		    					//memcpy(mRefData,0,databuf,8,size);
+   		    					//mRefSize=size;
+   		    					
+   		    					System.out.println("Enrol Succeed");
    		    				}else
-   		    					AddStatusList("Enrol Fail");
+   		    					System.out.println("Enrol Fail");
    		    			}
    		    			break;
    		    		case CMD_CAPTUREHOST: {
-   		    				int size=(byte)(mCmdData[5])+((mCmdData[6]<<8)&0xFF00)-1;
-   		    				if(mCmdData[7]==1) {
-   		    					memcpy(mMatData,0,mCmdData,8,size);
-   		    					mMatSize=size;
+   		    				int size=(byte)(databuf[5])+((databuf[6]<<8)&0xFF00)-1;
+   		    				if(databuf[7]==1) {
+   		    					//memcpy(mMatData,0,databuf,8,size);
+   		    					//mMatSize=size;
    		    					//ת��
    		    
-   		    					AddStatusList("Len="+String.valueOf(mMatSize));
-   		    					AddStatusListHex(mMatData,mMatSize);
-   		    					AddStatusList("Capture Succeed");
+   		    					System.out.println("Capture Succeed");
    		    				}
    		    				else
-   		    					AddStatusList("Capture Fail");
+   		    					System.out.println("Capture Fail");
    		    			}
    		    			break;
    		    		case CMD_MATCH:	{
-   		    				int score=(byte)(mCmdData[8])+((mCmdData[9]<<8)&0xF0);
-   		    				if(mCmdData[7]==1)
-   		    					AddStatusList("Match Succeed:"+String.valueOf(score));
+   		    				int score=(byte)(databuf[8])+((databuf[9]<<8)&0xF0);
+   		    				if(databuf[7]==1)
+   		    					System.out.println("Match Succeed:"+String.valueOf(score));
    		    				else
-   		    					AddStatusList("Match Fail");
+   		    					System.out.println("Match Fail"+String.valueOf(score));
    		    			}
    		    			break;
-   		    		case CMD_WRITECARD: {
-   		    				if(mCmdData[7]==1)
-   		    					AddStatusList("Write Card Succeed");
+   		    		case CMD_WRITEFPCARD: {
+   		    				if(databuf[7]==1)
+   		    					System.out.println("Write Card Succeed");
    		    				else
-   		    					AddStatusList("Write Card Fail");
+   		    					System.out.println("Write Card Fail");
    		    			}
    		    			break;
-   		    		case CMD_READCARD: {
-   		    				int size=(byte)(mCmdData[5])+((mCmdData[6]<<8)&0xF0);
+   		    		case CMD_READFPCARD: {
+   		    				int size=(byte)(databuf[5])+((databuf[6]<<8)&0xF0);
    		    				if(size>0)
    		    				{
-   		    					memcpy(mCardData,0,mCmdData,7,size);
-   		    					mCardSize=size;
-   		    					AddStatusList("Read Card Succeed");
+   		    					//memcpy(mCardData,0,databuf,7,size);
+   		    					//mCardSize=size;
+   		    					System.out.println("Read Card Succeed");
    		    				}
    		    				else
-   		    					AddStatusList("Read Card Fail");
+   		    					System.out.println("Read Card Fail");
    		    			}
    		    			break;
-   		    		case CMD_CARDID: {
-   		    				if(mCmdData[7]==1)
-   		    					AddStatusList("Match Succeed");
-   		    				else
-   		    					AddStatusList("Match Fail");
-   		    			}
-   		    			break;
-   		    		case CMD_CARDFINGER: {
-   							if(mCmdData[7]==1)
-   								AddStatusList("Match Succeed");
-   							else
-   								AddStatusList("Match Fail");
-   						}
-   						break;
-   		    		case CMD_UPCARDSN:
    		    		case CMD_CARDSN: {
-   		    				int size=(byte)(mCmdData[5])+((mCmdData[6]<<8)&0xF0)-1;
-   		    				if(size>0) {
-   		    					memcpy(mCardSn,0,mCmdData,8,size);    			    					
-   		    					AddStatusList("Read Card SN Succeed:"+Integer.toHexString(mCardSn[0]&0xFF)+Integer.toHexString(mCardSn[1]&0xFF)+Integer.toHexString(mCardSn[2]&0xFF)+Integer.toHexString(mCardSn[3]&0xFF));
-   		    				}
+   		    				if(databuf[7]==1)
+   		    					System.out.println("Match Succeed");
    		    				else
-   		    					AddStatusList("Read Card SN Fail");
+   		    					System.out.println("Match Fail");
    		    			}
    		    			break;
    		    		case CMD_GETSN:{
-   		    				int size=(byte)(mCmdData[5])+((mCmdData[6]<<8)&0xFF00)-1;
-   		    				if(mCmdData[7]==1) {
+   		    				int size=(byte)(databuf[5])+((databuf[6]<<8)&0xFF00)-1;
+   		    				if(databuf[7]==1) {
    		    					byte[] snb=new byte[32];
-   		    					memcpy(snb,0,mCmdData,8,size);
+   		    					memcpy(snb,0,databuf,8,size);
    		    					String sn = null;
    		    					try {
    		    						sn = new String(snb,0,size,"UNICODE");
    		    					} catch (UnsupportedEncodingException e) {
    		    						e.printStackTrace();
    		    					}
-   		    					AddStatusList("SN:"+sn);
+   		    					System.out.println("SN:"+sn);
    		    				}
    		    				else
-   		    					AddStatusList("Get SN Fail");
+   		    					System.out.println("Get SN Fail");
    		    			}
    		    			break;
-   		    		case CMD_PRINTCMD:{
-   							if(mCmdData[7]==1){
-   								AddStatusList("Print OK");
-   							}else{
-   								AddStatusList("Print Fail");
-   							}
-   		    			}
-   						break;
    		    		case CMD_GETBAT:{
-   		    				int size=(byte)(mCmdData[5])+((mCmdData[6]<<8)&0xFF00)-1;
+   		    				int size=(byte)(databuf[5])+((databuf[6]<<8)&0xFF00)-1;
    		    				if(size>0)
    		    				{
-   		    					memcpy(mBat,0,mCmdData,8,size);    			    					
-   		    					AddStatusList("Battery Value:"+Integer.toString(mBat[0]/10)+"."+Integer.toString(mBat[0]%10)+"V");
+   		    					//memcpy(mBat,0,databuf,8,size);    			    					
+   		    					System.out.println("Battery Value:"); //+Integer.toString(mBat[0]/10)+"."+Integer.toString(mBat[0]%10)+"V");
    		    				}else
-   		    					AddStatusList("Get Battery Value Fail");
+   		    					System.out.println("Get Battery Value Fail");
    		    			}
    		    			break;
-   		    		case CMD_GETCHAR:{
-   		    				int size=(byte)(mCmdData[5])+((mCmdData[6]<<8)&0xFF00)-1;
-		    				if(mCmdData[7]==1) {
-		    					memcpy(mMatData,0,mCmdData,8,size);
-		    					mMatSize=size;
-		    					AddStatusList("Len="+String.valueOf(mMatSize));
-		    					AddStatusList("Get Data Succeed");
-		    					AddStatusListHex(mMatData,mMatSize);
-		    				}
-		    				else
-		    					AddStatusList("Get Data Fail");
-   		    			}
-   		    			break;
-   		    		}
+					}
    		    	}   				
-   			}
+   			
            
    		}
-               */
+            
     }
 }
