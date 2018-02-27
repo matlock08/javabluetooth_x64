@@ -52,7 +52,7 @@
 				<artifactId>exec-maven-plugin</artifactId>  
 				<version>1.4.0</version>  
 				<configuration>
-					<mainClass>rom.roni.blue.RFCommClient</mainClass>
+					<mainClass>rom.roni.app.Main</mainClass>
 				</configuration>
 			</plugin>  
 		</plugins>
