@@ -1,4 +1,4 @@
-package rom.roni.blue;
+package com.roni.blue;
 
 import java.io.IOException;
 import java.util.List;

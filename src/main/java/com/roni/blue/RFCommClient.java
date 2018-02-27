@@ -1,4 +1,4 @@
-package rom.roni.blue;
+package com.roni.blue;
 
 import java.io.*;
 import javax.microedition.io.Connector;

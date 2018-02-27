@@ -52,7 +52,7 @@
 				<artifactId>exec-maven-plugin</artifactId>  
 				<version>1.4.0</version>  
 				<configuration>
-					<mainClass>rom.roni.app.Main</mainClass>
+					<mainClass>com.roni.app.Main</mainClass>
 				</configuration>
 			</plugin>  
 		</plugins>
