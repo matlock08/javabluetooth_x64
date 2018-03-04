@@ -6,7 +6,6 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
 <StackPane fx:id="rootPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.roni.app.MainController">
    <children>
       <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
@@ -88,7 +87,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </GridPane.margin>
                   </Button>
-                  <TextField text="Proporciona Número de Empledo" GridPane.columnSpan="4" GridPane.rowIndex="1">
+                  <TextField text="Second" GridPane.columnSpan="4" GridPane.rowIndex="1">
                      <font>
                         <Font name="Arial" size="36.0" />
                      </font>
