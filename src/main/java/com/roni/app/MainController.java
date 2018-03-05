@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.control.Button;
@@ -27,30 +28,63 @@ public class MainController {
 	private TextField clock;
 
     @FXML
+	private TextField numeroEmpleado;
+
+    @FXML
 	private StackPane rootPane;
+
+    private boolean first = true;
 
     
     @FXML
-    private void handleButtonAction(ActionEvent event) {
+    private void handleEnterAction(ActionEvent event) {
         // Button was clicked, do something...
         System.out.println("Button Action " +  event );
 
         loadNextScene();
     }
 
+    @FXML
+    private void handleClearAction(ActionEvent event) {
+        
+        
+        numeroEmpleado.setText("");
+        
+    }
+
+    @FXML
+    private void handleDigitAction(ActionEvent event) {
+        
+        if (first) {
+            first = false;
+            
+            numeroEmpleado.setText(((Button)event.getSource()).getText());
+        } else {
+            
+            numeroEmpleado.appendText(((Button)event.getSource()).getText());
+        }
+        
+    }
+
     private void loadNextScene() {
         try {
-            Parent entradaView = (StackPane)FXMLLoader.load(getClass().getResource("/fxml/entrada.fxml"));
-                
-            final Scene entradaScene = new Scene(entradaView);
+            String nombreEmpleado = getEmpleadoById(numeroEmpleado.getText());
 
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/entrada.fxml"));
+            Scene entradaScene = new Scene((Pane)loader.load());
             Stage currStage = (Stage)rootPane.getScene().getWindow();
-
+            EntradaController controller = loader.<EntradaController>getController();
+            controller.initData( nombreEmpleado );
             currStage.setScene(entradaScene);
+
         } catch(java.io.IOException ioe ) {
 
         }
 
+    }
+
+    private String getEmpleadoById(String id) {
+        return "Eder";
     }
     
 }

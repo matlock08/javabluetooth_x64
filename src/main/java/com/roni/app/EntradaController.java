@@ -17,6 +17,22 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
 public class EntradaController {
-    
+    @FXML
+	private TextField clock;
+
+    @FXML
+	private TextField prompText;
+
+    @FXML
+	private StackPane rootPane;
+
+
+    void initialize() {
+
+    }
+
+    void initData(String customer) {
+        prompText.setText("Hola " + customer + " vas a ? ");
+    }
     
 }
