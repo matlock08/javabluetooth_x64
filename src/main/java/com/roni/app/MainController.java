@@ -21,6 +21,9 @@ public class MainController {
 	private Button myOkButton;
 
     @FXML
+	private Button myCancelButton;
+
+    @FXML
 	private TextField clock;
 
     @FXML
