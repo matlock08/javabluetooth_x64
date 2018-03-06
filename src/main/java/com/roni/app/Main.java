@@ -14,20 +14,45 @@ import javafx.fxml.FXMLLoader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
+import org.springframework.boot.*;
+import org.springframework.context.annotation.*;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
+
+@ComponentScan({"com.roni.service","com.roni.app"})
+@SpringBootApplication
 public class Main extends Application {
-   
+    private ConfigurableApplicationContext context;
+    private Parent rootNode;
+
+    @Override
+    public void init() throws Exception {
+        SpringApplicationBuilder builder = new SpringApplicationBuilder(Main.class);
+        context = builder.run(getParameters().getRaw().toArray(new String[0]));
+ 
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
+        loader.setControllerFactory(context::getBean);
+        rootNode = loader.load();
+    }
+
     @Override
     public void start(Stage stage) throws java.io.IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
-               
-        final Scene scene = new Scene(root,800, 600);
+                       
+        final Scene scene = new Scene(rootNode,800, 600);
         scene.setFill(null);
         stage.setScene(scene);
         stage.show();
         stage.setFullScreen(true);
     }
 
+    @Override
+    public void stop() throws Exception {
+        context.close();
+    }
+
     public static void main(String[] args) throws java.io.IOException {
         launch(args);
     }
+    
 }

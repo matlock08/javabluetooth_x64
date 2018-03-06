@@ -1,5 +1,6 @@
 package com.roni.app;
 
+import com.roni.service.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
@@ -16,7 +17,10 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import org.springframework.stereotype.*;
+import org.springframework.beans.factory.annotation.*;
 
+@Component
 public class MainController {
     @FXML
 	private Button myOkButton;
@@ -32,6 +36,9 @@ public class MainController {
 
     @FXML
 	private StackPane rootPane;
+
+    @Autowired
+    private BackendService service;
 
     private boolean first = true;
 

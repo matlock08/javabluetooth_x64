@@ -72,11 +72,11 @@ public class RFCommClient {
 	}
 
 
-
+/*
     public static void main(String[] args) throws IOException, InterruptedException {
 		RFCommClient rfcomm = new RFCommClient(args);     
         
-		/*
+		
 		byte[] probeImage = rfcomm.getFingerPrintImageAsBMP(5000);
         FingerprintTemplate probe = new FingerprintTemplate(probeImage);
         FingerprintTemplate candidate = new FingerprintTemplate(probeImage);
@@ -86,10 +86,12 @@ public class RFCommClient {
 
 		System.out.println(); 
         System.out.println("Score " + score);    
-		*/
+		
 
 
-		/*
+
+
+		
 		byte[] templateDevice = rfcomm.enrollHost(5000);
 		
 		FingerprintTemplate template = new FingerprintTemplate(templateDevice);
@@ -107,7 +109,11 @@ public class RFCommClient {
 
 		System.out.println(); 
         System.out.println("Score " + score); 
-		*/
+		
+
+
+
+		
 
 		byte[] templateDevice = rfcomm.enrollHost(5000);
 		
@@ -117,6 +123,7 @@ public class RFCommClient {
         
 		rfcomm.close();
     }
+	*/
 
 	/**
 	 * Method to get the raw image on BMP format from device

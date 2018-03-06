@@ -15,7 +15,9 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import org.springframework.stereotype.*;
 
+@Component
 public class EntradaController {
     @FXML
 	private TextField clock;
