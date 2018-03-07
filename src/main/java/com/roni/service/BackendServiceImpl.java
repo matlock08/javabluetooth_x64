@@ -9,5 +9,7 @@ public class BackendServiceImpl implements BackendService {
     @Autowired
     private RestTemplate restTemplate;
 
-
+    public String getEmpleadoById(String id) {
+        return "Eder";
+    }
 }

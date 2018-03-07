@@ -91,7 +91,7 @@ public class MainController {
     }
 
     private String getEmpleadoById(String id) {
-        return "Eder";
+        return service.getEmpleadoById(id);
     }
     
 }

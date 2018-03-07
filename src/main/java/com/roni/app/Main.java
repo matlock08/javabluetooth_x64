@@ -1,5 +1,6 @@
 package com.roni.app;
 
+import  com.roni.config.ApplicationProperties;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
@@ -19,9 +20,11 @@ import org.springframework.context.annotation.*;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @ComponentScan({"com.roni.service","com.roni.app"})
 @SpringBootApplication
+@EnableConfigurationProperties({ApplicationProperties.class})
 public class Main extends Application {
     private ConfigurableApplicationContext context;
     private Parent rootNode;
