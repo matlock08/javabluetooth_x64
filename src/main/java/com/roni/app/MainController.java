@@ -48,6 +48,8 @@ public class MainController {
         // Button was clicked, do something...
         System.out.println("Button Action " +  event );
 
+        System.out.println( "Token " + service.getToken().getId_token() );
+
         loadNextScene();
     }
 

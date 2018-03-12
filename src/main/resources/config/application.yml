@@ -14,6 +14,6 @@ spring:
 application:
     connectTimeout: 60000
     readTimeout: 60000
-    registroUrl: http://192.241.199.83:8082
+    registroUrl: http://fibraroni.dyndns.org:8082
     registroUser: admin
     registroPassword: admin

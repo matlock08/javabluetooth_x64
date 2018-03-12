@@ -33,12 +33,13 @@ public class RFCommClient {
     private final static byte CMD_GETCHAR=0x31;
     private final static byte CMD_UPCARDSN=0x43;
 
+	private String serverURL = null;
 	private StreamConnection clientSession;
     private OutputStream out;
     private BufferedInputStream br;
     
 	public RFCommClient(String[] args ) throws IOException,InterruptedException  {
-		String serverURL;
+		
         if ((args != null) && (args.length > 0)) {
             serverURL = args[0];
         } else {
@@ -54,11 +55,15 @@ public class RFCommClient {
 
         System.out.println("Connecting to " + serverURL);
 
+		open();
+		    
+	}
+
+	public void open() throws IOException {
 		clientSession = (StreamConnection)Connector.open(serverURL);
 
 		out = clientSession.openOutputStream();
         br = new BufferedInputStream(clientSession.openInputStream());
-		    
 	}
 
 	public void close() {

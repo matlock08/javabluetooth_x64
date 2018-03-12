@@ -1,6 +1,7 @@
 package com.roni.app;
 
 import com.roni.blue.*;
+import com.roni.service.*;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -18,6 +19,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import org.springframework.stereotype.*;
+import org.springframework.beans.factory.annotation.*;
 
 @Component
 public class EntradaController {
@@ -35,26 +37,38 @@ public class EntradaController {
 
     private RFCommClient clientBT;
 
+    @Autowired
+    private BackendService service;
+
+    private String btURL = "btspp://881B9911B3EE:6;authenticate=false;encrypt=false;master=false";
+
 
     void initialize() {
+        
+    }
+
+    void initData(String customer) {
+        prompText.setText("Hola " + customer + " vas a ? ");
         java.util.Calendar cal = java.util.Calendar.getInstance();
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm:ss");
         clock.setText( sdf.format(cal.getTime()) );
         try {
-            clientBT = new RFCommClient(null);
+            String params[] = new String[1];
+            params[0] = btURL;
+            clientBT = new RFCommClient(params);
         } catch( java.io.IOException | java.lang.InterruptedException ioe  ) {
             counter.setText( "Unable to connect to BT" );
         }
     }
 
-    void initData(String customer) {
-        prompText.setText("Hola " + customer + " vas a ? ");
-    }
-
     @FXML
     private void handleEntryAction(ActionEvent event) {
         try {
-            clientBT.captureHost(5000);
+            byte[]template = clientBT.captureHost(5000);
+
+            if (template != null) {
+                System.out.println("Evauate template");
+            }
         } catch( java.io.IOException ioe ) {
             counter.setText( "Unable to connect to BT" );
         }
