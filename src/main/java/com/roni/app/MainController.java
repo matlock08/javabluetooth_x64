@@ -47,8 +47,10 @@ public class MainController {
     private void handleEnterAction(ActionEvent event) {
         // Button was clicked, do something...
         System.out.println("Button Action " +  event );
+        String token = service.getToken().getId_token();
+        System.out.println( "Token " + token );
 
-        System.out.println( "Token " + service.getToken().getId_token() );
+        System.out.println( service.getEmpleadoById("1351", token ).getNombre() );
 
         loadNextScene();
     }
@@ -77,7 +79,7 @@ public class MainController {
 
     private void loadNextScene() {
         try {
-            String nombreEmpleado = getEmpleadoById(numeroEmpleado.getText());
+            String nombreEmpleado = ""; //getEmpleadoById(numeroEmpleado.getText());
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/entrada.fxml"));
             Scene entradaScene = new Scene((Pane)loader.load());
@@ -93,7 +95,7 @@ public class MainController {
     }
 
     private String getEmpleadoById(String id) {
-        return service.getEmpleadoById(id);
+        return service.getEmpleadoById(id, "").getNombre();
     }
     
 }

@@ -14,10 +14,19 @@ public class BackendServiceImpl implements BackendService {
     @Autowired
     private ApplicationProperties properties;
 
-    public String getEmpleadoById(String id) {
-        return "Eder";
+    public EmpleadoResponse getEmpleadoById(String id, String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token );
+        HttpEntity<EmpleadoResponse> entity = new HttpEntity<EmpleadoResponse>(headers);
+        ResponseEntity<EmpleadoResponse> response = restTemplate.exchange(properties.getRegistroUrl() + "/api/empleados/" + id,
+                                                                        HttpMethod.GET,
+                                                                        entity,
+                                                                        EmpleadoResponse.class);
+
+        return response.getBody();
     }
 
+    
     public LoginResponse getToken() {
         HttpEntity<LoginRequest> request = new HttpEntity<>(new LoginRequest("admin","admin"));
         ResponseEntity<LoginResponse> response = restTemplate.exchange(properties.getRegistroUrl() + "/api/authenticate",

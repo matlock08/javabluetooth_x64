@@ -2,5 +2,5 @@ package com.roni.service;
 
 public interface BackendService {
     public LoginResponse getToken();
-    public String getEmpleadoById(String id);
+    public EmpleadoResponse getEmpleadoById(String id, String token);
 }
