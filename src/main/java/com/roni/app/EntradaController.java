@@ -1,5 +1,7 @@
 package com.roni.app;
 
+import com.roni.blue.*;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
@@ -23,18 +25,72 @@ public class EntradaController {
 	private TextField clock;
 
     @FXML
+	private TextField counter;
+
+    @FXML
 	private TextField prompText;
 
     @FXML
 	private StackPane rootPane;
 
+    private RFCommClient clientBT;
+
 
     void initialize() {
-
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm:ss");
+        clock.setText( sdf.format(cal.getTime()) );
+        try {
+            clientBT = new RFCommClient(null);
+        } catch( java.io.IOException | java.lang.InterruptedException ioe  ) {
+            counter.setText( "Unable to connect to BT" );
+        }
     }
 
     void initData(String customer) {
         prompText.setText("Hola " + customer + " vas a ? ");
+    }
+
+    @FXML
+    private void handleEntryAction(ActionEvent event) {
+        try {
+            clientBT.captureHost(5000);
+        } catch( java.io.IOException ioe ) {
+            counter.setText( "Unable to connect to BT" );
+        }
+        
+    }
+
+    @FXML
+    private void handleOutForLunchAction(ActionEvent event) {
+        // Button was clicked, do something...
+        System.out.println("Button Action " +  event );
+
+        
+    }
+
+    @FXML
+    private void handleComeBackLunchAction(ActionEvent event) {
+        // Button was clicked, do something...
+        System.out.println("Button Action " +  event );
+
+        
+    }
+
+    @FXML
+    private void handleEndOfDayAction(ActionEvent event) {
+        // Button was clicked, do something...
+        System.out.println("Button Action " +  event );
+
+        
+    }
+
+    @FXML
+    private void handleAnotherExitAction(ActionEvent event) {
+        // Button was clicked, do something...
+        System.out.println("Button Action " +  event );
+
+        
     }
     
 }
