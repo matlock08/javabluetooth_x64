@@ -47,10 +47,7 @@ public class MainController {
     private void handleEnterAction(ActionEvent event) {
         // Button was clicked, do something...
         System.out.println("Button Action " +  event );
-        String token = service.getToken().getId_token();
-        System.out.println( "Token " + token );
-
-        System.out.println( service.getEmpleadoById("1351", token ).getNombre() );
+       
 
         loadNextScene();
     }
@@ -79,13 +76,18 @@ public class MainController {
 
     private void loadNextScene() {
         try {
-            String nombreEmpleado = ""; //getEmpleadoById(numeroEmpleado.getText());
+            String token = service.getToken().getId_token();
+            System.out.println( "Token " + token );
+            EmpleadoResponse empleado =  service.getEmpleadoById("1351", token );
+            System.out.println( empleado.getNombre() );
+
+            String nombreEmpleado = empleado.getNombre();
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/entrada.fxml"));
             Scene entradaScene = new Scene((Pane)loader.load());
             Stage currStage = (Stage)rootPane.getScene().getWindow();
             EntradaController controller = loader.<EntradaController>getController();
-            controller.initData( nombreEmpleado );
+            controller.initData( empleado );
             currStage.setScene(entradaScene);
 
         } catch(java.io.IOException ioe ) {

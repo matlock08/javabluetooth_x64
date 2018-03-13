@@ -47,8 +47,8 @@ public class EntradaController {
         
     }
 
-    void initData(String customer) {
-        prompText.setText("Hola " + customer + " vas a ? ");
+    void initData(EmpleadoResponse empleado) {
+        prompText.setText("Hola " + empleado.getNombre() + " vas a ? ");
         java.util.Calendar cal = java.util.Calendar.getInstance();
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm:ss");
         clock.setText( sdf.format(cal.getTime()) );
