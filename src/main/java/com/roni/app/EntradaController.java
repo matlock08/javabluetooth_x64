@@ -20,6 +20,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import org.springframework.stereotype.*;
 import org.springframework.beans.factory.annotation.*;
+import com.machinezoo.sourceafis.*;
 
 @Component
 public class EntradaController {
@@ -42,12 +43,14 @@ public class EntradaController {
 
     private String btURL = "btspp://881B9911B3EE:6;authenticate=false;encrypt=false;master=false";
 
+    private EmpleadoResponse empleado;
 
     void initialize() {
         
     }
 
     void initData(EmpleadoResponse empleado) {
+        this.empleado = empleado;
         prompText.setText("Hola " + empleado.getNombre() + " vas a ? ");
         java.util.Calendar cal = java.util.Calendar.getInstance();
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm:ss");
@@ -64,9 +67,19 @@ public class EntradaController {
     @FXML
     private void handleEntryAction(ActionEvent event) {
         try {
-            byte[]template = clientBT.captureHost(5000);
+            byte[]templateDevice = clientBT.captureHost(5000);
 
-            if (template != null) {
+            FingerprintTemplate templateRequest = new FingerprintTemplate(templateDevice);
+            FingerPrintRequest request = new FingerPrintRequest();
+
+            request.setTemplate(templateRequest.json());
+            request.setEmpleado(empleado);
+
+            String token = service.getToken().getId_token();
+            
+            service.setEmpleadoFingerPrint(request, token);
+
+            if (templateDevice != null) {
                 System.out.println("Evauate template");
             }
         } catch( java.io.IOException ioe ) {
