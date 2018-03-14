@@ -56,9 +56,7 @@ public class EntradaController {
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm:ss");
         clock.setText( sdf.format(cal.getTime()) );
         try {
-            String params[] = new String[1];
-            params[0] = btURL;
-            clientBT = new RFCommClient(params);
+            clientBT = new RFCommClient(btURL);
         } catch( java.io.IOException | java.lang.InterruptedException ioe  ) {
             counter.setText( "Unable to connect to BT" );
         }

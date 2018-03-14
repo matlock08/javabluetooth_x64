@@ -1,7 +1,6 @@
 package com.roni.blue;
 
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.ArrayList;
 import javax.bluetooth.*;

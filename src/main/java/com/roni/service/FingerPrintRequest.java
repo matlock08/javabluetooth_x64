@@ -4,7 +4,6 @@ import java.util.Objects;
 
 
 public class FingerPrintRequest {
-    private static final long serialVersionUID = 1L;    
     private Long id;
     private String template;
     private byte[] imagen;

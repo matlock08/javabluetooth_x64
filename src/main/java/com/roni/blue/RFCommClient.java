@@ -1,12 +1,14 @@
 package com.roni.blue;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
-import javax.obex.*;
-import com.machinezoo.sourceafis.*;
-import java.nio.file.Paths;
-import java.nio.file.Files;
 
 
 public class RFCommClient {
@@ -38,97 +40,31 @@ public class RFCommClient {
     private OutputStream out;
     private BufferedInputStream br;
     
-	public RFCommClient(String[] args ) throws IOException,InterruptedException  {
-		
-        if ((args != null) && (args.length > 0)) {
-            serverURL = args[0];
-        } else {
-            String[] searchArgs = null;
-            ServicesSearch services = new ServicesSearch(searchArgs);
-            if (services.getServiceFound().size() == 0) {
-                System.out.println("RFComm service not found");
-                return;
-            }
-            // Select the first service found
-            serverURL = services.getServiceFound().get(0);
-        }
+	public RFCommClient(String serverURL ) throws IOException,InterruptedException  {
+		this.serverURL = serverURL;
 
-        System.out.println("Connecting to " + serverURL);
+        if ( serverURL == null ) {
+            throw new IOException("Needs to define an URL for Bluetooth device");
+        }
 
 		open();
 		    
 	}
 
-	public void open() throws IOException {
+	protected void open() throws IOException {
 		clientSession = (StreamConnection)Connector.open(serverURL);
 
 		out = clientSession.openOutputStream();
         br = new BufferedInputStream(clientSession.openInputStream());
 	}
 
-	public void close() {
-		try {
-			out.close();
-			br.close();
-			clientSession.close();
-		} catch ( IOException ie ) {
-			System.out.println(ie.getMessage());
-		}
+	protected void close() throws IOException {
+		
+		out.close();
+		br.close();
+		clientSession.close();
+		
 	}
-
-
-/*
-    public static void main(String[] args) throws IOException, InterruptedException {
-		RFCommClient rfcomm = new RFCommClient(args);     
-        
-		
-		byte[] probeImage = rfcomm.getFingerPrintImageAsBMP(5000);
-        FingerprintTemplate probe = new FingerprintTemplate(probeImage);
-        FingerprintTemplate candidate = new FingerprintTemplate(probeImage);
-
-        FingerprintMatcher matcher = new FingerprintMatcher(probe);
-        double score = matcher.match(candidate);
-
-		System.out.println(); 
-        System.out.println("Score " + score);    
-		
-
-
-
-
-		
-		byte[] templateDevice = rfcomm.enrollHost(5000);
-		
-		FingerprintTemplate template = new FingerprintTemplate(templateDevice);
-
-		System.out.println(template.json() );
-
-		byte[] templateCaptureByte = rfcomm.captureHost(5000);
-		
-		FingerprintTemplate templateCapture = new FingerprintTemplate(templateCaptureByte);
-
-		System.out.println(templateCapture.json() );
-
-		FingerprintMatcher matcher = new FingerprintMatcher(template);
-        double score = matcher.match(templateCapture);
-
-		System.out.println(); 
-        System.out.println("Score " + score); 
-		
-
-
-
-		
-
-		byte[] templateDevice = rfcomm.enrollHost(5000);
-		
-		byte[] templateCaptureByte = rfcomm.captureHost(5000);
-
-		byte[] aux = rfcomm.matchDevice(5000, templateDevice, templateCaptureByte );
-        
-		rfcomm.close();
-    }
-	*/
 
 	protected boolean waitForData(long timeout) throws IOException {
 		short iterations = 10;
@@ -184,11 +120,23 @@ public class RFCommClient {
 		} else {
 			throw new IOException("Read timeout from HF7000");
 		}
-                      
-        return receiveCommand(databuff,i);
-	}
 
-	
+		if ((databuff[0] == 'F') && (databuff[1] == 'T') && (databuff[4] == CMD_ENROLHOST) ) {
+			
+			int size = (byte) (databuff[5]) + ((databuff[6] << 8) & 0xFF00) - 1;
+			if (databuff[7] == 1) {
+				byte[] buffer = new byte[size];
+				memcpy(buffer, 0, databuff, 8, size);
+				return buffer;
+			} else {
+				throw new IOException("Unable to enroll on host");
+			}
+			
+		} else {
+			throw new IOException("Incorrect response from HF7000");
+		}
+
+	}
 
 	/**
 	 * Method to get the template on device specific format to capture
@@ -206,32 +154,55 @@ public class RFCommClient {
 		} else {
 			throw new IOException("Read timeout from HF7000");
 		}
-        
-        return receiveCommand(databuff,i);
+
+		if ((databuff[0] == 'F') && (databuff[1] == 'T') && (databuff[4] == CMD_CAPTUREHOST) ) {
+			
+			int size = (byte) (databuff[5]) + ((databuff[6] << 8) & 0xFF00) - 1;
+			if (databuff[7] == 1) {
+				byte[] buffer = new byte[size];
+				memcpy(buffer, 0, databuff, 8, size);
+				return buffer;
+			} else {
+				throw new IOException("Unable to enroll on host");
+			}
+			
+		} else {
+			throw new IOException("Incorrect response from HF7000");
+		}
 	}
 
-	public byte[] matchDevice(long timeout, byte []enrol, byte []capture ) throws IOException {
+	public boolean matchOnDevice(long timeout, byte []original, byte []test ) throws IOException {
 		byte[] buffer = new byte[1024];
 		byte[] databuff = new byte[1024];
 		int i = 0;
 
-		memcpy(buffer,0,enrol,0,512);
-		memcpy(buffer,512,capture,0,512);
+		memcpy(buffer,0,original,0,512);
+		memcpy(buffer,512,test,0,512);
 		
 		sendCommand(CMD_MATCH, buffer, 1024);         
 
-        try {
-            Thread.sleep(timeout);
-        } catch ( java.lang.InterruptedException ie ) {
+        if ( waitForData(timeout) ) {
+			while ( br.available() != 0 ) {
+            	databuff[i] = (byte)br.read();
+            	i++;
+        	}
+		} else {
+			throw new IOException("Read timeout from HF7000");
+		}
 
-        }
+		if ((databuff[0] == 'F') && (databuff[1] == 'T') && (databuff[4] == CMD_MATCH) ) {
 
-        while ( br.available() != 0 ) {
-            databuff[i] = (byte)br.read();
-            i++;
-        }
+			int score = (byte) (databuff[8]) + ((databuff[9] << 8) & 0xF0);
+			if (databuff[7] == 1)
+				return true;
+			else
+				return false;
+		
+		} else {
+			return false;	
+		}
+
         
-        return receiveCommand(databuff,i);
 	}
 
     private void sendCommand(byte cmdid,byte[] data,int size) throws IOException {
@@ -253,7 +224,6 @@ public class RFCommClient {
         int sum=calcCheckSum(sendbuf,(7+size));
         sendbuf[7+size]=(byte)(sum);
         sendbuf[8+size]=(byte)(sum>>8);
-
 
         out.write( sendbuf );
         out.flush();    
@@ -372,142 +342,133 @@ public class RFCommClient {
    		
 		return null;
 	}
-		
-	private byte[] receiveCommand(byte[] databuf,int datasize) {
-		
+	
+	private byte[] processCommand(byte[] databuf, int datasize) {
 
-   		    	if((databuf[0]=='F')&&(databuf[1]=='T'))	{
-   		    		switch(databuf[4]) {
-   		    		case CMD_ENROLID: {
-   		    				if(databuf[7]==1) {
-   		    					int id=databuf[8]+(databuf[9]<<8);
-   		    					System.out.println("Enrol Succeed:"+String.valueOf(id));
-   		    				}
-   		    				else
-   		    					System.out.println("Enrol Fail");
-   		    					
-   		    			}
-   		    			break;
-   		    		case CMD_VERIFY: {
-   		    				if(databuf[7]==1)
-   		    					System.out.println("Verify Succeed");
-   		    				else
-   		    					System.out.println("Verify Fail");
-   		    			}
-   		    			break;
-   		    		case CMD_IDENTIFY: {
-   		    				if(databuf[7]==1) {
-   		    					int id=(byte)(databuf[8])+(byte)((databuf[9]<<8)&0xF0);
-   		        				System.out.println("Search Result:"+String.valueOf(id));
-   		    				} else
-   		    					System.out.println("Search Fail");
-   		    			}
-   		    			break;
-   		    		case CMD_DELETEID:
-   		    			{
-   		    				if(databuf[7]==1)
-   		    					System.out.println("Delete Succeed");
-   		    				else
-   		    					System.out.println("Delete Fail");
-   		    			}
-   		    			break;
-   		    		case CMD_CLEARID: {
-   		    				if(databuf[7]==1)
-   		    					System.out.println("Clear Succeed");
-   		    				else
-   		    					System.out.println("Clear Fail");
-   		    			}
-   		    			break;
-   		    		case CMD_ENROLHOST: {
-   		    				int size=(byte)(databuf[5])+((databuf[6]<<8)&0xFF00)-1;
-   		    				if(databuf[7]==1) {
-								System.out.println("Enrol Succeed");
-								byte[] buffer = new byte[size];
-   		    					memcpy(buffer,0,databuf,8,size);   		    					
-   		    					return buffer;
-   		    					
-   		    				}else
-   		    					System.out.println("Enrol Fail");
-   		    			}
-   		    			break;
-   		    		case CMD_CAPTUREHOST: {
-   		    				int size=(byte)(databuf[5])+((databuf[6]<<8)&0xFF00)-1;
-   		    				if(databuf[7]==1) {
-   		    					System.out.println("Capture Succeed");
-								byte[] buffer = new byte[size];
-   		    					memcpy(buffer,0,databuf,8,size);   		    					
-   		    					return buffer;
-   		    				}
-   		    				else
-   		    					System.out.println("Capture Fail");
-   		    			}
-   		    			break;
-   		    		case CMD_MATCH:	{
-   		    				int score=(byte)(databuf[8])+((databuf[9]<<8)&0xF0);
-   		    				if(databuf[7]==1)
-   		    					System.out.println("Match Succeed:"+String.valueOf(score));
-   		    				else
-   		    					System.out.println("Match Fail"+String.valueOf(score));
-   		    			}
-   		    			break;
-   		    		case CMD_WRITEFPCARD: {
-   		    				if(databuf[7]==1)
-   		    					System.out.println("Write Card Succeed");
-   		    				else
-   		    					System.out.println("Write Card Fail");
-   		    			}
-   		    			break;
-   		    		case CMD_READFPCARD: {
-   		    				int size=(byte)(databuf[5])+((databuf[6]<<8)&0xF0);
-   		    				if(size>0)
-   		    				{
-   		    					//memcpy(mCardData,0,databuf,7,size);
-   		    					//mCardSize=size;
-   		    					System.out.println("Read Card Succeed");
-   		    				}
-   		    				else
-   		    					System.out.println("Read Card Fail");
-   		    			}
-   		    			break;
-   		    		case CMD_CARDSN: {
-   		    				if(databuf[7]==1)
-   		    					System.out.println("Match Succeed");
-   		    				else
-   		    					System.out.println("Match Fail");
-   		    			}
-   		    			break;
-   		    		case CMD_GETSN:{
-   		    				int size=(byte)(databuf[5])+((databuf[6]<<8)&0xFF00)-1;
-   		    				if(databuf[7]==1) {
-   		    					byte[] snb=new byte[32];
-   		    					memcpy(snb,0,databuf,8,size);
-   		    					String sn = null;
-   		    					try {
-   		    						sn = new String(snb,0,size,"UNICODE");
-   		    					} catch (UnsupportedEncodingException e) {
-   		    						e.printStackTrace();
-   		    					}
-   		    					System.out.println("SN:"+sn);
-   		    				}
-   		    				else
-   		    					System.out.println("Get SN Fail");
-   		    			}
-   		    			break;
-   		    		case CMD_GETBAT:{
-   		    				int size=(byte)(databuf[5])+((databuf[6]<<8)&0xFF00)-1;
-   		    				if(size>0)
-   		    				{
-   		    					//memcpy(mBat,0,databuf,8,size);    			    					
-   		    					System.out.println("Battery Value:"); //+Integer.toString(mBat[0]/10)+"."+Integer.toString(mBat[0]%10)+"V");
-   		    				}else
-   		    					System.out.println("Get Battery Value Fail");
-   		    			}
-   		    			break;
+		if ((databuf[0] == 'F') && (databuf[1] == 'T')) {
+			switch (databuf[4]) {
+			case CMD_ENROLID: {
+				if (databuf[7] == 1) {
+					int id = databuf[8] + (databuf[9] << 8);
+					System.out.println("Enrol Succeed:" + String.valueOf(id));
+				} else
+					System.out.println("Enrol Fail");
+
+			}
+				break;
+			case CMD_VERIFY: {
+				if (databuf[7] == 1)
+					System.out.println("Verify Succeed");
+				else
+					System.out.println("Verify Fail");
+			}
+				break;
+			case CMD_IDENTIFY: {
+				if (databuf[7] == 1) {
+					int id = (byte) (databuf[8]) + (byte) ((databuf[9] << 8) & 0xF0);
+					System.out.println("Search Result:" + String.valueOf(id));
+				} else
+					System.out.println("Search Fail");
+			}
+				break;
+			case CMD_DELETEID: {
+				if (databuf[7] == 1)
+					System.out.println("Delete Succeed");
+				else
+					System.out.println("Delete Fail");
+			}
+				break;
+			case CMD_CLEARID: {
+				if (databuf[7] == 1)
+					System.out.println("Clear Succeed");
+				else
+					System.out.println("Clear Fail");
+			}
+				break;
+			case CMD_ENROLHOST: {
+				int size = (byte) (databuf[5]) + ((databuf[6] << 8) & 0xFF00) - 1;
+				if (databuf[7] == 1) {
+					System.out.println("Enrol Succeed");
+					byte[] buffer = new byte[size];
+					memcpy(buffer, 0, databuf, 8, size);
+					return buffer;
+
+				} else
+					System.out.println("Enrol Fail");
+			}
+				break;
+			case CMD_CAPTUREHOST: {
+				int size = (byte) (databuf[5]) + ((databuf[6] << 8) & 0xFF00) - 1;
+				if (databuf[7] == 1) {
+					System.out.println("Capture Succeed");
+					byte[] buffer = new byte[size];
+					memcpy(buffer, 0, databuf, 8, size);
+					return buffer;
+				} else
+					System.out.println("Capture Fail");
+			}
+				break;
+			case CMD_MATCH: {
+				int score = (byte) (databuf[8]) + ((databuf[9] << 8) & 0xF0);
+				if (databuf[7] == 1)
+					System.out.println("Match Succeed:" + String.valueOf(score));
+				else
+					System.out.println("Match Fail" + String.valueOf(score));
+			}
+				break;
+			case CMD_WRITEFPCARD: {
+				if (databuf[7] == 1)
+					System.out.println("Write Card Succeed");
+				else
+					System.out.println("Write Card Fail");
+			}
+				break;
+			case CMD_READFPCARD: {
+				int size = (byte) (databuf[5]) + ((databuf[6] << 8) & 0xF0);
+				if (size > 0) {
+					//memcpy(mCardData,0,databuf,7,size);
+					//mCardSize=size;
+					System.out.println("Read Card Succeed");
+				} else
+					System.out.println("Read Card Fail");
+			}
+				break;
+			case CMD_CARDSN: {
+				if (databuf[7] == 1)
+					System.out.println("Match Succeed");
+				else
+					System.out.println("Match Fail");
+			}
+				break;
+			case CMD_GETSN: {
+				int size = (byte) (databuf[5]) + ((databuf[6] << 8) & 0xFF00) - 1;
+				if (databuf[7] == 1) {
+					byte[] snb = new byte[32];
+					memcpy(snb, 0, databuf, 8, size);
+					String sn = null;
+					try {
+						sn = new String(snb, 0, size, "UNICODE");
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
 					}
-   		    	}   				
-   			
-           
-   		return null;
-            
-    }
+					System.out.println("SN:" + sn);
+				} else
+					System.out.println("Get SN Fail");
+			}
+				break;
+			case CMD_GETBAT: {
+				int size = (byte) (databuf[5]) + ((databuf[6] << 8) & 0xFF00) - 1;
+				if (size > 0) {
+					//memcpy(mBat,0,databuf,8,size);    			    					
+					System.out.println("Battery Value:"); //+Integer.toString(mBat[0]/10)+"."+Integer.toString(mBat[0]%10)+"V");
+				} else
+					System.out.println("Get Battery Value Fail");
+			}
+				break;
+			}
+		}
+
+		return null;
+
+	}
 }
