@@ -77,14 +77,22 @@ public class EntradaController {
 
             System.out.println(service);
             String token = service.getToken().getId_token();
-            
-            
 
+            String dbTemplate = service.getEmpleadoFingerPrint("1101", token ); 
+            FingerprintTemplate mainTemplate = new FingerprintTemplate(dbTemplate);
+
+            FingerprintMatcher matcher = new FingerprintMatcher(mainTemplate);
+            double score = matcher.match(templateRequest);
+
+             System.out.println("Score " + score );
+
+            /*
             if ( service.setEmpleadoFingerPrint(request, token) ) {
                 System.out.println("OK");
             } else {
                 System.out.println("Error");
-            }
+            }*/
+
         } catch( java.io.IOException ioe ) {
             counter.setText( "Unable to connect to BT" );
         }

@@ -130,6 +130,24 @@ public class RFCommClient {
     }
 	*/
 
+	protected boolean waitForData(long timeout) throws IOException {
+		short iterations = 10;
+		long basedTimeout = (long)(timeout / iterations);
+		boolean available = false;
+
+		while ( !available && iterations > 0 ) {
+			try {
+				Thread.sleep(basedTimeout);
+			} catch (InterruptedException ie ) {
+				throw new IOException(ie);
+			}
+			available = (br.available() != 0);
+			iterations--;
+		}
+
+		return available;
+	}
+
 	/**
 	 * Method to get the raw image on BMP format from device
 	 */
@@ -138,16 +156,14 @@ public class RFCommClient {
         int i = 0;
 		sendCommand(CMD_GETIMAGE, null, 0);         
 
-        try {
-            Thread.sleep(timeout);
-        } catch ( java.lang.InterruptedException ie ) {
-
-        }
-
-        while ( br.available() != 0 ) {
-            databuff[i] = (byte)br.read();
-            i++;
-        }
+		if ( waitForData(timeout) ) {
+			while ( br.available() != 0 ) {
+            	databuff[i] = (byte)br.read();
+            	i++;
+        	}
+		} else {
+			throw new IOException("Read timeout from HF7000");
+		}
         
         return receiveCommandImage(databuff,i);
 	}
@@ -160,19 +176,19 @@ public class RFCommClient {
 		int i = 0;
 		sendCommand(CMD_ENROLHOST, null, 0);         
 
-        try {
-            Thread.sleep(timeout);
-        } catch ( java.lang.InterruptedException ie ) {
-
-        }
-
-        while ( br.available() != 0 ) {
-            databuff[i] = (byte)br.read();
-            i++;
-        }
-        
+		if ( waitForData(timeout) ) {
+			while ( br.available() != 0 ) {
+            	databuff[i] = (byte)br.read();
+            	i++;
+        	}
+		} else {
+			throw new IOException("Read timeout from HF7000");
+		}
+                      
         return receiveCommand(databuff,i);
 	}
+
+	
 
 	/**
 	 * Method to get the template on device specific format to capture
@@ -182,16 +198,14 @@ public class RFCommClient {
 		int i = 0;
 		sendCommand(CMD_CAPTUREHOST, null, 0);         
 
-        try {
-            Thread.sleep(timeout);
-        } catch ( java.lang.InterruptedException ie ) {
-
-        }
-
-        while ( br.available() != 0 ) {
-            databuff[i] = (byte)br.read();
-            i++;
-        }
+		if ( waitForData(timeout) ) {
+			while ( br.available() != 0 ) {
+            	databuff[i] = (byte)br.read();
+            	i++;
+        	}
+		} else {
+			throw new IOException("Read timeout from HF7000");
+		}
         
         return receiveCommand(databuff,i);
 	}
