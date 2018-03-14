@@ -30,13 +30,13 @@ public class BackendServiceImpl implements BackendService {
     public String getEmpleadoFingerPrint(String id, String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token );
-        HttpEntity<String> entity = new HttpEntity<String>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(properties.getRegistroUrl() + "/api/huellas/" + id,
+        HttpEntity<HuellaResponse> entity = new HttpEntity<HuellaResponse>(headers);
+        ResponseEntity<HuellaResponse> response = restTemplate.exchange(properties.getRegistroUrl() + "/api/huellas/" + id,
                                                                         HttpMethod.GET,
                                                                         entity,
-                                                                        String.class);
+                                                                        HuellaResponse.class);
 
-        return response.getBody();
+        return response.getBody().getTemplate();
     }
 
     public EmpleadoResponse getEmpleadoById(String id, String token) {
