@@ -75,12 +75,15 @@ public class EntradaController {
             request.setTemplate(templateRequest.json());
             request.setEmpleado(empleado);
 
+            System.out.println(service);
             String token = service.getToken().getId_token();
             
-            service.setEmpleadoFingerPrint(request, token);
+            
 
-            if (templateDevice != null) {
-                System.out.println("Evauate template");
+            if ( service.setEmpleadoFingerPrint(request, token) ) {
+                System.out.println("OK");
+            } else {
+                System.out.println("Error");
             }
         } catch( java.io.IOException ioe ) {
             counter.setText( "Unable to connect to BT" );

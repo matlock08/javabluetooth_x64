@@ -19,6 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import org.springframework.stereotype.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.context.ApplicationContext;
 
 @Component
 public class MainController {
@@ -39,6 +40,9 @@ public class MainController {
 
     @Autowired
     private BackendService service;
+
+    @Autowired
+    private ApplicationContext context;
 
     private boolean first = true;
 
@@ -85,6 +89,7 @@ public class MainController {
             String nombreEmpleado = empleado.getNombre();
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/entrada.fxml"));
+            loader.setControllerFactory(context::getBean);
             Scene entradaScene = new Scene((Pane)loader.load());
             Stage currStage = (Stage)rootPane.getScene().getWindow();
             EntradaController controller = loader.<EntradaController>getController();
