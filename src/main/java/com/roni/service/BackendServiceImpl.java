@@ -1,5 +1,9 @@
 package com.roni.service;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+
 import com.roni.config.ApplicationProperties;
 import org.springframework.stereotype.*;
 import org.springframework.beans.factory.annotation.*;
@@ -29,6 +33,7 @@ public class BackendServiceImpl implements BackendService {
 
     public boolean registerEmpleadoAction(String empleadoId, String registroId, String token) {
         RegistroEmpleadoRequest request = new RegistroEmpleadoRequest();
+        request.setFechaHora(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX").withZone(ZoneOffset.UTC).format(Instant.now()) );
         EmpleadoResponse empleado = new EmpleadoResponse();
         empleado.setId( Long.valueOf(empleadoId) );
         RegistroResponse registro = new RegistroResponse();
