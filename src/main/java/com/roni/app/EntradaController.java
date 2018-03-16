@@ -82,7 +82,12 @@ public class EntradaController {
             FingerprintMatcher matcher = new FingerprintMatcher(mainTemplate);
             double score = matcher.match(templateRequest);
 
-             System.out.println("Score " + score );
+            System.out.println("Score " + score );
+            if ( score>= 40 ) {
+                boolean reg = service.registerEmpleadoAction("1351","1", token); // Entrada
+
+                System.out.println("Registro evento " + reg );
+            }
 
             /*
             if ( service.setEmpleadoFingerPrint(request, token) ) {

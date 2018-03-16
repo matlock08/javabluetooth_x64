@@ -27,6 +27,27 @@ public class BackendServiceImpl implements BackendService {
         return response.getStatusCode().is2xxSuccessful();
     }
 
+    public boolean registerEmpleadoAction(String empleadoId, String registroId, String token) {
+        RegistroEmpleadoRequest request = new RegistroEmpleadoRequest();
+        EmpleadoResponse empleado = new EmpleadoResponse();
+        empleado.setId( Long.valueOf(empleadoId) );
+        RegistroResponse registro = new RegistroResponse();
+        registro.setId( Long.valueOf(registroId) );
+        request.setEmpleado(empleado);
+        request.setRegistro(registro);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token );
+        HttpEntity<RegistroEmpleadoRequest> entity = new HttpEntity<RegistroEmpleadoRequest>(request, headers);
+        ResponseEntity<RegistroEmpleadoRequest> response = restTemplate.exchange(properties.getRegistroUrl() + "/api/registro-empleados",
+                                                                        HttpMethod.POST,
+                                                                        entity,
+                                                                        RegistroEmpleadoRequest.class);
+
+
+        return response.getStatusCode().is2xxSuccessful();
+    }
+
     public String getEmpleadoFingerPrint(String id, String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token );
