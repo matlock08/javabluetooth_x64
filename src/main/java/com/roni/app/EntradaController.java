@@ -21,6 +21,7 @@ import javafx.fxml.FXML;
 import org.springframework.stereotype.*;
 import org.springframework.beans.factory.annotation.*;
 import com.machinezoo.sourceafis.*;
+import java.util.Set;
 
 @Component
 public class EntradaController {
@@ -68,33 +69,26 @@ public class EntradaController {
             byte[]templateDevice = clientBT.captureHost(5000);
 
             FingerprintTemplate templateRequest = new FingerprintTemplate(templateDevice);
-            FingerPrintRequest request = new FingerPrintRequest();
+            
+            String token = service.getToken().getId_token();           
 
-            request.setTemplate(templateRequest.json());
-            request.setEmpleado(empleado);
+            Set<FingerPrintRequest> huellas = empleado.getHuellas();
 
-            System.out.println(service);
-            String token = service.getToken().getId_token();
+            for(FingerPrintRequest huella : huellas ) {
+                FingerprintTemplate mainTemplate = new FingerprintTemplate(huella.getTemplate());
+                FingerprintMatcher matcher = new FingerprintMatcher(mainTemplate);
+                double score = matcher.match(templateRequest);
 
-            String dbTemplate = service.getEmpleadoFingerPrint("1101", token ); 
-            FingerprintTemplate mainTemplate = new FingerprintTemplate(dbTemplate);
+                System.out.println("Score " + score );
+                if ( score>= 40 ) {
+                    boolean reg = service.registerEmpleadoAction(String.valueOf(empleado.getId()),"1", token); // Entrada
 
-            FingerprintMatcher matcher = new FingerprintMatcher(mainTemplate);
-            double score = matcher.match(templateRequest);
-
-            System.out.println("Score " + score );
-            if ( score>= 40 ) {
-                boolean reg = service.registerEmpleadoAction("1351","1", token); // Entrada
-
-                System.out.println("Registro evento " + reg );
+                    System.out.println("Registro evento " + reg );
+                }
             }
 
-            /*
-            if ( service.setEmpleadoFingerPrint(request, token) ) {
-                System.out.println("OK");
-            } else {
-                System.out.println("Error");
-            }*/
+            
+
 
         } catch( java.io.IOException ioe ) {
             counter.setText( "Unable to connect to BT" );

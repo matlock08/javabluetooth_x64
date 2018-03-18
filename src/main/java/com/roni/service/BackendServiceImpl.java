@@ -69,7 +69,7 @@ public class BackendServiceImpl implements BackendService {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token );
         HttpEntity<EmpleadoResponse> entity = new HttpEntity<EmpleadoResponse>(headers);
-        ResponseEntity<EmpleadoResponse> response = restTemplate.exchange(properties.getRegistroUrl() + "/api/empleados/" + id,
+        ResponseEntity<EmpleadoResponse> response = restTemplate.exchange(properties.getRegistroUrl() + "/api/empleados/numeroEmpleado/" + id,
                                                                         HttpMethod.GET,
                                                                         entity,
                                                                         EmpleadoResponse.class);

@@ -1,7 +1,7 @@
 package com.roni.service;
 
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * A Empleado.
@@ -20,7 +20,7 @@ public class EmpleadoResponse implements Serializable {
     private String fotoContentType;
     private String fechaAlta;
     private String estado;
-    
+    private Set<FingerPrintRequest> huellas = new HashSet<FingerPrintRequest>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -35,22 +35,12 @@ public class EmpleadoResponse implements Serializable {
         return numeroEmpleado;
     }
 
-    public EmpleadoResponse numeroEmpleado(String numeroEmpleado) {
-        this.numeroEmpleado = numeroEmpleado;
-        return this;
-    }
-
     public void setNumeroEmpleado(String numeroEmpleado) {
         this.numeroEmpleado = numeroEmpleado;
     }
 
     public String getNombre() {
         return nombre;
-    }
-
-    public EmpleadoResponse nombre(String nombre) {
-        this.nombre = nombre;
-        return this;
     }
 
     public void setNombre(String nombre) {
@@ -61,22 +51,12 @@ public class EmpleadoResponse implements Serializable {
         return apellidoMaterno;
     }
 
-    public EmpleadoResponse apellidoMaterno(String apellidoMaterno) {
-        this.apellidoMaterno = apellidoMaterno;
-        return this;
-    }
-
     public void setApellidoMaterno(String apellidoMaterno) {
         this.apellidoMaterno = apellidoMaterno;
     }
 
     public String getApellidoPaterno() {
         return apellidoPaterno;
-    }
-
-    public EmpleadoResponse apellidoPaterno(String apellidoPaterno) {
-        this.apellidoPaterno = apellidoPaterno;
-        return this;
     }
 
     public void setApellidoPaterno(String apellidoPaterno) {
@@ -87,22 +67,12 @@ public class EmpleadoResponse implements Serializable {
         return genero;
     }
 
-    public EmpleadoResponse genero(String genero) {
-        this.genero = genero;
-        return this;
-    }
-
     public void setGenero(String genero) {
         this.genero = genero;
     }
 
     public String getFoto() {
         return foto;
-    }
-
-    public EmpleadoResponse foto(String foto) {
-        this.foto = foto;
-        return this;
     }
 
     public void setFoto(String foto) {
@@ -113,22 +83,12 @@ public class EmpleadoResponse implements Serializable {
         return fotoContentType;
     }
 
-    public EmpleadoResponse fotoContentType(String fotoContentType) {
-        this.fotoContentType = fotoContentType;
-        return this;
-    }
-
     public void setFotoContentType(String fotoContentType) {
         this.fotoContentType = fotoContentType;
     }
 
     public String getFechaAlta() {
         return fechaAlta;
-    }
-
-    public EmpleadoResponse fechaAlta(String fechaAlta) {
-        this.fechaAlta = fechaAlta;
-        return this;
     }
 
     public void setFechaAlta(String fechaAlta) {
@@ -139,18 +99,18 @@ public class EmpleadoResponse implements Serializable {
         return estado;
     }
 
-    public EmpleadoResponse estado(String estado) {
-        this.estado = estado;
-        return this;
-    }
-
     public void setEstado(String estado) {
         this.estado = estado;
     }
 
-    
+    public Set<FingerPrintRequest> getHuellas() {
+        return huellas;
+    }
 
-    
+    public void setHuellas(Set<FingerPrintRequest> huellas) {
+        this.huellas = huellas;
+    }
+   
 
     @Override
     public boolean equals(Object o) {
