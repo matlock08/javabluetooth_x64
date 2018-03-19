@@ -17,7 +17,7 @@ public class BackendServiceImpl implements BackendService {
 
     @Autowired
     private ApplicationProperties properties;
-
+/*
     public boolean setEmpleadoFingerPrint(FingerPrintRequest request, String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token );
@@ -29,7 +29,7 @@ public class BackendServiceImpl implements BackendService {
 
 
         return response.getStatusCode().is2xxSuccessful();
-    }
+    }*/
 
     public boolean registerEmpleadoAction(String empleadoId, String registroId, String token) {
         RegistroEmpleadoRequest request = new RegistroEmpleadoRequest();
@@ -51,18 +51,6 @@ public class BackendServiceImpl implements BackendService {
 
 
         return response.getStatusCode().is2xxSuccessful();
-    }
-
-    public String getEmpleadoFingerPrint(String id, String token) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token );
-        HttpEntity<HuellaResponse> entity = new HttpEntity<HuellaResponse>(headers);
-        ResponseEntity<HuellaResponse> response = restTemplate.exchange(properties.getRegistroUrl() + "/api/huellas/" + id,
-                                                                        HttpMethod.GET,
-                                                                        entity,
-                                                                        HuellaResponse.class);
-
-        return response.getBody().getTemplate();
     }
 
     public EmpleadoResponse getEmpleadoById(String id, String token) {

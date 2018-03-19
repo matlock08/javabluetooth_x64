@@ -20,6 +20,8 @@ import javafx.fxml.FXML;
 import org.springframework.stereotype.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.ApplicationContext;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @Component
 public class MainController {
@@ -45,23 +47,28 @@ public class MainController {
     private ApplicationContext context;
 
     private boolean first = true;
+    private Timer myTimer;
+    private OneSecTimerTask oneSecTimerTask;
+
+    public void initialize() {
+        oneSecTimerTask = new OneSecTimerTask(clock);
+        myTimer = new Timer();
+        myTimer.scheduleAtFixedRate(oneSecTimerTask, 0, 1000);
+    }
 
     
     @FXML
     private void handleEnterAction(ActionEvent event) {
-        // Button was clicked, do something...
-        System.out.println("Button Action " +  event );
-       
-
-        loadNextScene();
+        
+        if ( !"".equals(numeroEmpleado.getText()) ) {
+            loadNextScene();
+        }
+        
     }
 
     @FXML
     private void handleClearAction(ActionEvent event) {
-        
-        
         numeroEmpleado.setText("");
-        
     }
 
     @FXML
@@ -81,29 +88,24 @@ public class MainController {
     private void loadNextScene() {
         try {
             String token = service.getToken().getId_token();
-            System.out.println( "Token " + token );
-            EmpleadoResponse empleado =  service.getEmpleadoById("101", token );
-            System.out.println( empleado.getNombre() );
+            EmpleadoResponse empleado =  service.getEmpleadoById(numeroEmpleado.getText(), token );
             
-
-            String nombreEmpleado = empleado.getNombre();
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/entrada.fxml"));
-            loader.setControllerFactory(context::getBean);
-            Scene entradaScene = new Scene((Pane)loader.load());
-            Stage currStage = (Stage)rootPane.getScene().getWindow();
-            EntradaController controller = loader.<EntradaController>getController();
-            controller.initData( empleado );
-            currStage.setScene(entradaScene);
+            if ( empleado != null ) {            
+                myTimer.cancel();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/entrada.fxml"));
+                loader.setControllerFactory(context::getBean);
+                Scene entradaScene = new Scene((Pane)loader.load());
+                Stage currStage = (Stage)rootPane.getScene().getWindow();
+                EntradaController controller = loader.<EntradaController>getController();
+                controller.initData( empleado );
+                currStage.setScene(entradaScene);
+                currStage.setFullScreen(true);
+            }
 
         } catch(java.io.IOException ioe ) {
-
+            System.out.println(ioe);
         }
 
-    }
-
-    private String getEmpleadoById(String id) {
-        return service.getEmpleadoById(id, "").getNombre();
     }
     
 }

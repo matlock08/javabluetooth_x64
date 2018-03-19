@@ -22,6 +22,8 @@ import org.springframework.stereotype.*;
 import org.springframework.beans.factory.annotation.*;
 import com.machinezoo.sourceafis.*;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @Component
 public class EntradaController {
@@ -43,11 +45,14 @@ public class EntradaController {
     private BackendService service;
 
     private String btURL = "btspp://881B9911B3EE:6;authenticate=false;encrypt=false;master=false";
-
+    private Timer myTimer;
+    private OneSecTimerTask oneSecTimerTask;
     private EmpleadoResponse empleado;
 
-    void initialize() {
-        
+    public void initialize() {
+        oneSecTimerTask = new OneSecTimerTask(clock);
+        myTimer = new Timer();
+        myTimer.scheduleAtFixedRate(oneSecTimerTask, 0, 1000);
     }
 
     void initData(EmpleadoResponse empleado) {
@@ -65,33 +70,8 @@ public class EntradaController {
 
     @FXML
     private void handleEntryAction(ActionEvent event) {
-        try {
-            byte[]templateDevice = clientBT.captureHost(5000);
-
-            FingerprintTemplate templateRequest = new FingerprintTemplate(templateDevice);
-            
-            String token = service.getToken().getId_token();           
-
-            Set<FingerPrintRequest> huellas = empleado.getHuellas();
-
-            for(FingerPrintRequest huella : huellas ) {
-                FingerprintTemplate mainTemplate = new FingerprintTemplate(huella.getTemplate());
-                FingerprintMatcher matcher = new FingerprintMatcher(mainTemplate);
-                double score = matcher.match(templateRequest);
-
-                System.out.println("Score " + score );
-                if ( score>= 40 ) {
-                    boolean reg = service.registerEmpleadoAction(String.valueOf(empleado.getId()),"1", token); // Entrada
-
-                    System.out.println("Registro evento " + reg );
-                }
-            }
-
-            
-
-
-        } catch( java.io.IOException ioe ) {
-            counter.setText( "Unable to connect to BT" );
+        if ( executeAction("1") ) {
+            System.out.println("Se registro entrada");
         }
         
     }
@@ -126,6 +106,36 @@ public class EntradaController {
         System.out.println("Button Action " +  event );
 
         
+    }
+
+    private boolean executeAction(String action) {
+        boolean res = false;
+
+        try {
+            byte[]templateDevice = clientBT.captureHost(5000);
+            FingerprintTemplate templateRequest = new FingerprintTemplate(templateDevice);
+            
+            String token = service.getToken().getId_token();
+            Set<FingerPrintRequest> huellas = empleado.getHuellas();
+
+            for(FingerPrintRequest huella : huellas ) {
+                FingerprintMatcher matcher = new FingerprintMatcher(new FingerprintTemplate(huella.getTemplate()));
+                double score = matcher.match(templateRequest);
+
+                if ( score>= 40 ) {
+                    if ( service.registerEmpleadoAction(String.valueOf(empleado.getId()),action, token) ) {
+                        return true;
+                    }
+                }
+            }
+
+        } catch( java.io.IOException ioe ) {
+            res = false;
+            counter.setText( "Unable to connect to BT" );
+        }
+        
+
+        return res;
     }
     
 }
