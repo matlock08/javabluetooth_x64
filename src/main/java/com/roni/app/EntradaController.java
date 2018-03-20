@@ -2,6 +2,7 @@ package com.roni.app;
 
 import com.roni.blue.*;
 import com.roni.service.*;
+import com.roni.task.*;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -39,33 +40,58 @@ public class EntradaController {
     @FXML
 	private StackPane rootPane;
 
+    @FXML
+	private Button entrarButton;
+
+    @FXML
+	private Button salidaButton;
+
+    @FXML
+	private Button regresoComerButton;
+
+    @FXML
+	private Button otraSalidaButton;
+    
+    @FXML
+	private Button salirComerButton;
+
+    
     private RFCommClient clientBT;
+    private boolean bluetoothEnabled = false;
 
     @Autowired
     private BackendService service;
 
     private String btURL = "btspp://881B9911B3EE:6;authenticate=false;encrypt=false;master=false";
-    private Timer myTimer;
+    private Timer oneSecondTimer;
     private OneSecTimerTask oneSecTimerTask;
     private EmpleadoResponse empleado;
 
     public void initialize() {
         oneSecTimerTask = new OneSecTimerTask(clock);
-        myTimer = new Timer();
-        myTimer.scheduleAtFixedRate(oneSecTimerTask, 0, 1000);
+        oneSecondTimer = new Timer();
+        oneSecondTimer.scheduleAtFixedRate(oneSecTimerTask, 0, 1000);
+        setDisable(true);
     }
 
     void initData(EmpleadoResponse empleado) {
         this.empleado = empleado;
         prompText.setText("Hola " + empleado.getNombre() + " vas a ? ");
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm:ss");
-        clock.setText( sdf.format(cal.getTime()) );
         try {
             clientBT = new RFCommClient(btURL);
+            setDisable(false);
         } catch( java.io.IOException | java.lang.InterruptedException ioe  ) {
-            counter.setText( "Unable to connect to BT" );
+            counter.setText( "No hay conexión bluetooth" );
+            setDisable(true);
         }
+    }
+
+    private void setDisable(boolean enable) {
+        entrarButton.setDisable(enable);
+        salidaButton.setDisable(enable);
+        regresoComerButton.setDisable(enable);
+        otraSalidaButton.setDisable(enable);
+        salirComerButton.setDisable(enable);
     }
 
     @FXML
@@ -110,6 +136,9 @@ public class EntradaController {
 
     private boolean executeAction(String action) {
         boolean res = false;
+        CountDownTimerTask countDownTimerTask = new CountDownTimerTask(counter);
+        Timer fiveSecondTimer = new Timer();
+        fiveSecondTimer.scheduleAtFixedRate(countDownTimerTask, 0, 1000);
 
         try {
             byte[]templateDevice = clientBT.captureHost(5000);
@@ -131,7 +160,8 @@ public class EntradaController {
 
         } catch( java.io.IOException ioe ) {
             res = false;
-            counter.setText( "Unable to connect to BT" );
+            fiveSecondTimer.cancel();
+            counter.setText( "No se leyó de bluetooth" );
         }
         
 
