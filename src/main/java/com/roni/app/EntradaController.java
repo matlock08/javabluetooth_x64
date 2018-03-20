@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.control.Button;
@@ -21,6 +22,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import org.springframework.stereotype.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.context.ApplicationContext;
 import com.machinezoo.sourceafis.*;
 import java.util.Set;
 import java.util.Timer;
@@ -62,6 +64,9 @@ public class EntradaController {
     @Autowired
     private BackendService service;
 
+    @Autowired
+    private ApplicationContext context;
+
     private String btURL = "btspp://881B9911B3EE:6;authenticate=false;encrypt=false;master=false";
     private Timer oneSecondTimer;
     private OneSecTimerTask oneSecTimerTask;
@@ -80,6 +85,7 @@ public class EntradaController {
         try {
             clientBT = new RFCommClient(btURL);
             setDisable(false);
+            counter.setText( "" );
         } catch( java.io.IOException | java.lang.InterruptedException ioe  ) {
             counter.setText( "No hay conexión bluetooth" );
             setDisable(true);
@@ -98,6 +104,9 @@ public class EntradaController {
     private void handleEntryAction(ActionEvent event) {
         if ( executeAction("1") ) {
             System.out.println("Se registro entrada");
+            loadNextScene();
+        } else {
+            counter.setText( "NO coincide huella" );
         }
         
     }
@@ -166,6 +175,23 @@ public class EntradaController {
         
 
         return res;
+    }
+
+    private void loadNextScene() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/mensaje.fxml"));
+            loader.setControllerFactory(context::getBean);
+            Scene entradaScene = new Scene((Pane)loader.load());
+            Stage currStage = (Stage)rootPane.getScene().getWindow();
+            MensajeController controller = loader.<MensajeController>getController();
+            //controller.initData( empleado );
+            currStage.setScene(entradaScene);
+            currStage.setFullScreen(true);
+        } catch(java.io.IOException ioe ) {
+            System.out.println(ioe);
+        }
+            
+
     }
     
 }
