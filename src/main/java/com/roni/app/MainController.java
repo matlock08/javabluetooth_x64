@@ -88,8 +88,8 @@ public class MainController {
 
     private void loadNextScene() {
         try {
-            String token = service.getToken().getId_token();
-            EmpleadoResponse empleado =  service.getEmpleadoById(numeroEmpleado.getText(), token );
+            String token = ""; //service.getToken().getId_token();
+            EmpleadoResponse empleado =  new Empleado(); //service.getEmpleadoById(numeroEmpleado.getText(), token );
             
             if ( empleado != null ) {            
                 myTimer.cancel();

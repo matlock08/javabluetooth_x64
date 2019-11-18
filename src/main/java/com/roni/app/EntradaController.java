@@ -81,7 +81,7 @@ public class EntradaController {
 
     void initData(EmpleadoResponse empleado) {
         this.empleado = empleado;
-        prompText.setText("Hola " + empleado.getNombre() + " vas a ? ");
+        prompText.setText("Hola Jose vas a ? ");
         try {
             clientBT = new RFCommClient(btURL);
             setDisable(false);
@@ -150,9 +150,9 @@ public class EntradaController {
         fiveSecondTimer.scheduleAtFixedRate(countDownTimerTask, 0, 1000);
 
         try {
-            byte[]templateDevice = clientBT.captureHost(5000);
-            FingerprintTemplate templateRequest = new FingerprintTemplate(templateDevice);
-            
+            byte[]templateDevice = clientBT.readCard(5000);
+            //FingerprintTemplate templateRequest = new FingerprintTemplate(templateDevice);
+            /*
             String token = service.getToken().getId_token();
             Set<FingerPrintRequest> huellas = empleado.getHuellas();
 
@@ -166,6 +166,7 @@ public class EntradaController {
                     }
                 }
             }
+            */
 
         } catch( java.io.IOException ioe ) {
             res = false;

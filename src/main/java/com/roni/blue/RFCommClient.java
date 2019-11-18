@@ -171,6 +171,36 @@ public class RFCommClient {
 		}
 	}
 
+	public byte[] readCard(long timeout ) throws IOException {
+		byte[] databuff = new byte[1024];
+		int i = 0;
+		sendCommand(CMD_READDATACARD, null, 0);         
+
+		if ( waitForData(timeout) ) {
+			while ( br.available() != 0 ) {
+            	databuff[i] = (byte)br.read();
+            	i++;
+        	}
+		} else {
+			throw new IOException("Read timeout from HF7000");
+		}
+
+		if ((databuff[0] == 'F') && (databuff[1] == 'T') && (databuff[4] == CMD_READDATACARD) ) {
+			
+			int size = (byte) (databuff[5]) + ((databuff[6] << 8) & 0xFF00) - 1;
+			if (databuff[7] == 1) {
+				byte[] buffer = new byte[size];
+				memcpy(buffer, 0, databuff, 8, size);
+				return buffer;
+			} else {
+				throw new IOException("Unable to enroll on host");
+			}
+			
+		} else {
+			throw new IOException("Incorrect response from HF7000");
+		}
+	}
+
 	public boolean matchOnDevice(long timeout, byte []original, byte []test ) throws IOException {
 		byte[] buffer = new byte[1024];
 		byte[] databuff = new byte[1024];
