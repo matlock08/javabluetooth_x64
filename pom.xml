@@ -21,6 +21,7 @@
 	</properties>
 	<repositories>
 		<!-- Bluetooth Snapshots Repo -->
+		<!--
 		<repository>
 			<id>pyx4j-web-snapshot</id>
 			<url>http://repository.pyx4j.com/maven2-snapshot</url>
@@ -31,6 +32,7 @@
 				<enabled>false</enabled>
 			</releases>
 		</repository>
+		-->
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -56,13 +58,20 @@
 		<dependency>
 			<groupId>net.sf.bluecove</groupId>
 			<artifactId>bluecove</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
+			<version>2.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.machinezoo.sourceafis</groupId>
 			<artifactId>sourceafis</artifactId>
 			<version>2.2.0</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx -->
+<dependency>
+    <groupId>org.openjfx</groupId>
+    <artifactId>javafx</artifactId>
+    <version>11</version>
+</dependency>
+
 		
 	</dependencies>
 	<build>
